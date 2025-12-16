@@ -154,6 +154,96 @@ export default function HomeScreen() {
             </Pressable>
           </Animated.View>
 
+          {/* Premium Features */}
+          <Animated.View entering={FadeInUp.delay(150).duration(400)}>
+            <View style={styles.sectionHeader}>
+              <ThemedText type="heading">✨ Premium Özellikler</ThemedText>
+            </View>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.premiumContainer}
+            >
+              <Pressable onPress={() => router.push('/mood')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#FF6B6B', '#FF8E53']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>📊</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Mood Tracker</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Ruh haline göre öneri</ThemedText>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={() => router.push('/calendar')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#667eea', '#764ba2']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>🎯</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Takvim</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Kullanım geçmişi</ThemedText>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={() => router.push('/layering')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#00B4D8', '#0077B6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>💫</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Katmanlama</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Kombinasyon önerileri</ThemedText>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={() => router.push('/gift')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#E91E8C', '#C44569']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>🎁</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Hediye</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Hediye asistanı</ThemedText>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={() => router.push('/journal')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#FFD93D', '#FF9500']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>📸</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Günlük</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Deneyim kaydı</ThemedText>
+                </LinearGradient>
+              </Pressable>
+
+              <Pressable onPress={() => router.push('/spin')} style={styles.premiumCard}>
+                <LinearGradient
+                  colors={['#9D4EDD', '#7B2CBF']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.premiumGradient}
+                >
+                  <ThemedText style={styles.premiumEmoji}>🎲</ThemedText>
+                  <ThemedText style={styles.premiumTitle}>Çark</ThemedText>
+                  <ThemedText style={styles.premiumDesc}>Şansını dene!</ThemedText>
+                </LinearGradient>
+              </Pressable>
+            </ScrollView>
+          </Animated.View>
+
           {/* Weather Widget */}
           {weather && (
             <Animated.View entering={FadeInUp.delay(200).duration(400)}>
@@ -412,6 +502,13 @@ const styles = StyleSheet.create({
   quickActions: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.lg },
   quickAction: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: Spacing.md, borderRadius: BorderRadius.lg, gap: Spacing.sm },
   quickActionText: { fontSize: FontSizes.sm, fontWeight: FontWeights.semiBold },
+  // Premium Features
+  premiumContainer: { gap: Spacing.md, paddingBottom: Spacing.sm, marginBottom: Spacing.md },
+  premiumCard: { width: 120, borderRadius: BorderRadius.xl, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  premiumGradient: { padding: Spacing.md, alignItems: 'center', minHeight: 120 },
+  premiumEmoji: { fontSize: 28, marginBottom: Spacing.sm },
+  premiumTitle: { color: '#FFF', fontSize: FontSizes.sm, fontWeight: FontWeights.bold, textAlign: 'center' },
+  premiumDesc: { color: 'rgba(255,255,255,0.8)', fontSize: 10, textAlign: 'center', marginTop: 2 },
   weatherCard: { marginBottom: Spacing.lg, padding: Spacing.lg },
   weatherContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   weatherLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },

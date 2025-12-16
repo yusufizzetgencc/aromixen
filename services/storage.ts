@@ -4,7 +4,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserPreferences } from '@/types';
+import { UserPreferences, ScentCalendarEntry, MoodEntry, JournalEntry, NotificationPreferences, SpinResult } from '@/types';
 
 // ============ STORAGE KEYS ============
 const STORAGE_KEYS = {
@@ -14,6 +14,12 @@ const STORAGE_KEYS = {
   COLLECTIONS: '@aromixen_collections',
   RECENTLY_VIEWED: '@aromixen_recently_viewed',
   SEARCH_HISTORY: '@aromixen_search_history',
+  // Yeni özellikler
+  SCENT_CALENDAR: '@aromixen_scent_calendar',
+  MOOD_HISTORY: '@aromixen_mood_history',
+  JOURNAL_ENTRIES: '@aromixen_journal',
+  SPIN_HISTORY: '@aromixen_spin_history',
+  NOTIFICATION_PREFS: '@aromixen_notifications',
 } as const;
 
 // ============ TYPES ============
@@ -265,5 +271,228 @@ export async function clearAllData(): Promise<boolean> {
     console.error('[Storage] Clear all error:', error);
     return false;
   }
+}
+
+// ============ 🎯 SCENT CALENDAR ============
+export async function loadScentCalendar(): Promise<ScentCalendarEntry[]> {
+  return loadData(STORAGE_KEYS.SCENT_CALENDAR, []);
+}
+
+export async function saveScentCalendar(entries: ScentCalendarEntry[]): Promise<boolean> {
+  return saveData(STORAGE_KEYS.SCENT_CALENDAR, entries);
+}
+
+export async function addCalendarEntry(entry: Omit<ScentCalendarEntry, 'id' | 'createdAt'>): Promise<ScentCalendarEntry> {
+  const entries = await loadScentCalendar();
+  const newEntry: ScentCalendarEntry = {
+    ...entry,
+    id: `cal_${Date.now()}`,
+    createdAt: new Date().toISOString(),
+  };
+  
+  // Aynı gün için varsa güncelle
+  const existingIndex = entries.findIndex(e => e.date === entry.date);
+  if (existingIndex >= 0) {
+    entries[existingIndex] = newEntry;
+  } else {
+    entries.unshift(newEntry);
+  }
+  
+  await saveScentCalendar(entries);
+  return newEntry;
+}
+
+export async function getCalendarEntriesForMonth(year: number, month: number): Promise<ScentCalendarEntry[]> {
+  const entries = await loadScentCalendar();
+  return entries.filter(entry => {
+    const entryDate = new Date(entry.date);
+    return entryDate.getFullYear() === year && entryDate.getMonth() === month;
+  });
+}
+
+export async function getLastUsedDate(parfumId: string): Promise<string | null> {
+  const entries = await loadScentCalendar();
+  const entry = entries.find(e => e.parfumId === parfumId);
+  return entry?.date || null;
+}
+
+export async function getParfumUsageCount(parfumId: string): Promise<number> {
+  const entries = await loadScentCalendar();
+  return entries.filter(e => e.parfumId === parfumId).length;
+}
+
+// ============ 📊 MOOD TRACKER ============
+export async function loadMoodHistory(): Promise<MoodEntry[]> {
+  return loadData(STORAGE_KEYS.MOOD_HISTORY, []);
+}
+
+export async function saveMoodHistory(entries: MoodEntry[]): Promise<boolean> {
+  return saveData(STORAGE_KEYS.MOOD_HISTORY, entries);
+}
+
+export async function addMoodEntry(entry: Omit<MoodEntry, 'id' | 'createdAt'>): Promise<MoodEntry> {
+  const entries = await loadMoodHistory();
+  const newEntry: MoodEntry = {
+    ...entry,
+    id: `mood_${Date.now()}`,
+    createdAt: new Date().toISOString(),
+  };
+  
+  entries.unshift(newEntry);
+  
+  // Son 100 kayıtı tut
+  if (entries.length > 100) {
+    entries.splice(100);
+  }
+  
+  await saveMoodHistory(entries);
+  return newEntry;
+}
+
+export async function getTodaysMood(): Promise<MoodEntry | null> {
+  const entries = await loadMoodHistory();
+  const today = new Date().toISOString().split('T')[0];
+  return entries.find(e => e.date === today) || null;
+}
+
+// ============ 📸 SCENT JOURNAL ============
+export async function loadJournalEntries(): Promise<JournalEntry[]> {
+  return loadData(STORAGE_KEYS.JOURNAL_ENTRIES, []);
+}
+
+export async function saveJournalEntries(entries: JournalEntry[]): Promise<boolean> {
+  return saveData(STORAGE_KEYS.JOURNAL_ENTRIES, entries);
+}
+
+export async function addJournalEntry(entry: Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>): Promise<JournalEntry> {
+  const entries = await loadJournalEntries();
+  const now = new Date().toISOString();
+  const newEntry: JournalEntry = {
+    ...entry,
+    id: `journal_${Date.now()}`,
+    createdAt: now,
+    updatedAt: now,
+  };
+  
+  entries.unshift(newEntry);
+  await saveJournalEntries(entries);
+  return newEntry;
+}
+
+export async function updateJournalEntry(id: string, updates: Partial<JournalEntry>): Promise<JournalEntry | null> {
+  const entries = await loadJournalEntries();
+  const index = entries.findIndex(e => e.id === id);
+  
+  if (index === -1) return null;
+  
+  entries[index] = {
+    ...entries[index],
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+  
+  await saveJournalEntries(entries);
+  return entries[index];
+}
+
+export async function deleteJournalEntry(id: string): Promise<boolean> {
+  const entries = await loadJournalEntries();
+  const updated = entries.filter(e => e.id !== id);
+  return saveJournalEntries(updated);
+}
+
+export async function getJournalEntriesForParfum(parfumId: string): Promise<JournalEntry[]> {
+  const entries = await loadJournalEntries();
+  return entries.filter(e => e.parfumId === parfumId);
+}
+
+// ============ 🎲 SPIN WHEEL HISTORY ============
+export async function loadSpinHistory(): Promise<SpinResult[]> {
+  return loadData(STORAGE_KEYS.SPIN_HISTORY, []);
+}
+
+export async function saveSpinHistory(history: SpinResult[]): Promise<boolean> {
+  return saveData(STORAGE_KEYS.SPIN_HISTORY, history);
+}
+
+export async function addSpinResult(parfumId: string): Promise<SpinResult> {
+  const history = await loadSpinHistory();
+  const result: SpinResult = {
+    parfum: { id: parfumId } as any, // Sadece ID sakla, tam parfüm context'ten alınacak
+    spinAt: new Date().toISOString(),
+    wasUsed: false,
+  };
+  
+  history.unshift(result);
+  
+  // Son 50 sonucu tut
+  if (history.length > 50) {
+    history.splice(50);
+  }
+  
+  await saveSpinHistory(history);
+  return result;
+}
+
+// ============ 🔔 NOTIFICATION PREFERENCES ============
+const defaultNotificationPrefs: NotificationPreferences = {
+  enabled: true,
+  weatherSuggestions: true,
+  specialDayReminders: true,
+  dailyMoodCheck: false,
+  discoveryTips: true,
+  reminderTime: '09:00',
+};
+
+export async function loadNotificationPreferences(): Promise<NotificationPreferences> {
+  return loadData(STORAGE_KEYS.NOTIFICATION_PREFS, defaultNotificationPrefs);
+}
+
+export async function saveNotificationPreferences(prefs: NotificationPreferences): Promise<boolean> {
+  return saveData(STORAGE_KEYS.NOTIFICATION_PREFS, prefs);
+}
+
+// ============ EXTENDED LOAD ALL DATA ============
+export async function loadAllUserDataExtended(defaultPrefs: UserPreferences) {
+  const [
+    preferences, 
+    onboarding, 
+    favorites, 
+    collections, 
+    recentlyViewed, 
+    searchHistory,
+    scentCalendar,
+    moodHistory,
+    journalEntries,
+    spinHistory,
+    notificationPrefs,
+  ] = await Promise.all([
+    loadUserPreferences(defaultPrefs),
+    loadOnboardingStatus(),
+    loadFavorites(),
+    loadCollections(),
+    loadRecentlyViewed(),
+    loadSearchHistory(),
+    loadScentCalendar(),
+    loadMoodHistory(),
+    loadJournalEntries(),
+    loadSpinHistory(),
+    loadNotificationPreferences(),
+  ]);
+
+  return {
+    preferences,
+    isOnboardingComplete: onboarding.isComplete,
+    currentStep: onboarding.currentStep,
+    favorites,
+    collections,
+    recentlyViewed,
+    searchHistory,
+    scentCalendar,
+    moodHistory,
+    journalEntries,
+    spinHistory,
+    notificationPrefs,
+  };
 }
 

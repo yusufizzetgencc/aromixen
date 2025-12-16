@@ -296,3 +296,139 @@ export interface RecommendationResult {
 }
 
 export type ColorScheme = 'light' | 'dark';
+
+// ========== YENİ ÖZELLİKLER TİPLERİ ==========
+
+// 🎯 Parfüm Takvimi (Scent Calendar)
+export interface ScentCalendarEntry {
+  id: string;
+  parfumId: string;
+  date: string; // YYYY-MM-DD format
+  occasion?: string; // "iş", "randevu", "özel gün" vb.
+  note?: string;
+  rating?: number; // 1-5
+  weather?: string;
+  createdAt: string;
+}
+
+// 📊 Mood Tracker
+export type MoodType = 'enerjik' | 'romantik' | 'profesyonel' | 'rahat' | 'gizemi' | 'cesur' | 'mutlu' | 'sakin';
+
+export interface MoodEntry {
+  id: string;
+  mood: MoodType;
+  date: string;
+  parfumId?: string; // Seçilen parfüm
+  note?: string;
+  createdAt: string;
+}
+
+export interface MoodParfumMatch {
+  mood: MoodType;
+  emoji: string;
+  label: string;
+  description: string;
+  colors: string[];
+  scentTypes: KokuTipi[];
+  characteristics: string[];
+}
+
+// 💫 Katmanlama Önerileri (Layering)
+export interface LayeringPair {
+  baseParfumId: string;
+  topParfumId: string;
+  compatibilityScore: number; // 0-100
+  reason: string;
+  effect: string; // Katmanlamanın oluşturduğu etki
+  tips: string[];
+}
+
+export interface LayeringRule {
+  baseType: KokuTipi;
+  compatibleTypes: KokuTipi[];
+  incompatibleTypes: KokuTipi[];
+  tips: string[];
+}
+
+// 🎁 Hediye Asistanı
+export type GiftRecipient = 'anne' | 'baba' | 'sevgili_erkek' | 'sevgili_kadin' | 'arkadas_erkek' | 'arkadas_kadin' | 'is_arkadasi' | 'kendim';
+export type GiftOccasion = 'dogum_gunu' | 'yildonumu' | 'sevgililer_gunu' | 'anneler_gunu' | 'babalar_gunu' | 'yeni_yil' | 'ozel_gun' | 'tesaduf';
+
+export interface GiftQuery {
+  recipient: GiftRecipient;
+  recipientAge?: YasGrubu;
+  recipientGender: Cinsiyet;
+  occasion?: GiftOccasion;
+  budget: Butce;
+  recipientStyle?: KisilikTipi;
+  preferredTypes?: KokuTipi[];
+}
+
+export interface GiftRecommendation {
+  parfum: Parfum;
+  matchScore: number;
+  reasons: string[];
+  giftMessage?: string;
+}
+
+// 📸 Parfüm Günlüğü (Scent Journal)
+export interface JournalEntry {
+  id: string;
+  parfumId: string;
+  date: string;
+  title?: string;
+  content: string;
+  mood?: MoodType;
+  occasion?: string;
+  location?: string;
+  weather?: string;
+  rating: number; // 1-5
+  performance: {
+    longevity: number; // 1-5 (kalıcılık)
+    sillage: number; // 1-5 (iz bırakma)
+    projection: number; // 1-5 (yayılım)
+  };
+  tags: string[];
+  isFavoriteDay: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 🎲 Parfüm Çarkı
+export interface SpinWheelConfig {
+  source: 'all' | 'favorites' | 'collection';
+  collectionId?: string;
+  filters?: {
+    types?: KokuTipi[];
+    season?: Mevsim;
+    intensity?: KokuYogunlugu;
+  };
+}
+
+export interface SpinResult {
+  parfum: Parfum;
+  spinAt: string;
+  wasUsed: boolean;
+}
+
+// 🔔 Akıllı Bildirimler
+export type NotificationType = 'weather_suggestion' | 'special_day_reminder' | 'usage_reminder' | 'discovery' | 'mood_check';
+
+export interface NotificationPreferences {
+  enabled: boolean;
+  weatherSuggestions: boolean;
+  specialDayReminders: boolean;
+  dailyMoodCheck: boolean;
+  discoveryTips: boolean;
+  reminderTime?: string; // "09:00" format
+}
+
+export interface ScheduledNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+  scheduledFor: string;
+  sent: boolean;
+}
