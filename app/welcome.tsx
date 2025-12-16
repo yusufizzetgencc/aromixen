@@ -1,132 +1,75 @@
 /**
- * AROMIXEN - Premium Welcome Screen
- * Modern ve etkileyici karşılama ekranı
+ * AROMIXEN - Luxury Welcome Screen
+ * Premium, elegant ve sophisticated tasarım
  */
 
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { 
   FadeIn, 
   FadeInDown, 
-  FadeInUp, 
-  SlideInRight,
+  FadeInUp,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
   withSequence,
   withDelay,
-  interpolate,
   Easing,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 
 import { ThemedText } from '@/components/themed-text';
-import { Button } from '@/components/ui';
-import { Colors, Spacing, BorderRadius, FontSizes, FontWeights } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 
 const { width, height } = Dimensions.get('window');
 
-// Floating orb component
-function FloatingOrb({ 
+// Lüks renk paleti
+const LUXURY_COLORS = {
+  gold: '#C9A962',
+  goldLight: '#E5D4A1',
+  goldDark: '#8B7355',
+  champagne: '#F7E7CE',
+  roseGold: '#B76E79',
+  ivory: '#FFFFF0',
+  cream: '#FFFDD0',
+  midnight: '#0C1222',
+  charcoal: '#1A1F2E',
+  slate: '#2D3446',
+  pearl: '#F5F5F5',
+};
+
+// Elegant floating element
+function FloatingGlow({ 
   delay, 
   size, 
   color, 
   startX, 
   startY,
-  duration = 4000,
+  blur = 60,
 }: { 
   delay: number; 
   size: number; 
   color: string; 
   startX: number; 
   startY: number;
-  duration?: number;
+  blur?: number;
 }) {
-  const translateY = useSharedValue(0);
-  const translateX = useSharedValue(0);
+  const opacity = useSharedValue(0.3);
   const scale = useSharedValue(1);
-
-  useEffect(() => {
-    translateY.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(-30, { duration: duration, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0, { duration: duration, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1,
-        true
-      )
-    );
-    translateX.value = withDelay(
-      delay + 500,
-      withRepeat(
-        withSequence(
-          withTiming(15, { duration: duration * 1.2, easing: Easing.inOut(Easing.ease) }),
-          withTiming(-15, { duration: duration * 1.2, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1,
-        true
-      )
-    );
-    scale.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(1.1, { duration: duration * 0.8, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0.9, { duration: duration * 0.8, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1,
-        true
-      )
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: translateY.value },
-      { translateX: translateX.value },
-      { scale: scale.value },
-    ],
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        {
-          position: 'absolute',
-          left: startX,
-          top: startY,
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: color,
-        },
-        animatedStyle,
-      ]}
-    />
-  );
-}
-
-// Animated sparkle
-function Sparkle({ x, y, delay }: { x: number; y: number; delay: number }) {
-  const opacity = useSharedValue(0);
-  const scale = useSharedValue(0);
 
   useEffect(() => {
     opacity.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(1, { duration: 800 }),
-          withTiming(0, { duration: 800 })
+          withTiming(0.6, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+          withTiming(0.3, { duration: 3000, easing: Easing.inOut(Easing.ease) })
         ),
         -1
       )
@@ -135,8 +78,8 @@ function Sparkle({ x, y, delay }: { x: number; y: number; delay: number }) {
       delay,
       withRepeat(
         withSequence(
-          withTiming(1, { duration: 800 }),
-          withTiming(0.3, { duration: 800 })
+          withTiming(1.2, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
+          withTiming(1, { duration: 4000, easing: Easing.inOut(Easing.ease) })
         ),
         -1
       )
@@ -149,8 +92,65 @@ function Sparkle({ x, y, delay }: { x: number; y: number; delay: number }) {
   }));
 
   return (
+    <Animated.View
+      style={[
+        {
+          position: 'absolute',
+          left: startX - size / 2,
+          top: startY - size / 2,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: color,
+        },
+        animatedStyle,
+      ]}
+    />
+  );
+}
+
+// Animated diamond sparkle
+function DiamondSparkle({ x, y, delay, size = 8 }: { x: number; y: number; delay: number; size?: number }) {
+  const opacity = useSharedValue(0);
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    opacity.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1500 }),
+          withTiming(0, { duration: 1500 })
+        ),
+        -1
+      )
+    );
+    rotation.value = withDelay(
+      delay,
+      withRepeat(
+        withTiming(360, { duration: 6000, easing: Easing.linear }),
+        -1
+      )
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
+  return (
     <Animated.View style={[{ position: 'absolute', left: x, top: y }, animatedStyle]}>
-      <Ionicons name="sparkles" size={16} color="#FFD700" />
+      <View style={{
+        width: size,
+        height: size,
+        backgroundColor: LUXURY_COLORS.gold,
+        transform: [{ rotate: '45deg' }],
+        shadowColor: LUXURY_COLORS.gold,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+      }} />
     </Animated.View>
   );
 }
@@ -162,197 +162,190 @@ export default function WelcomeScreen() {
   const isDark = colorScheme === 'dark';
   const { parfumler } = useApp();
 
-  // Pulse animation for logo
-  const logoPulse = useSharedValue(1);
+  // Elegant pulse animation for logo
+  const logoGlow = useSharedValue(0.4);
+  const logoScale = useSharedValue(1);
   
   useEffect(() => {
-    logoPulse.value = withRepeat(
+    logoGlow.value = withRepeat(
       withSequence(
-        withTiming(1.05, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
-        withTiming(1, { duration: 2000, easing: Easing.inOut(Easing.ease) })
+        withTiming(0.7, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0.4, { duration: 2500, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1
+    );
+    logoScale.value = withRepeat(
+      withSequence(
+        withTiming(1.02, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 3000, easing: Easing.inOut(Easing.ease) })
       ),
       -1
     );
   }, []);
 
-  const logoAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: logoPulse.value }],
+  const logoGlowStyle = useAnimatedStyle(() => ({
+    opacity: logoGlow.value,
   }));
 
-  const stats = [
-    { value: '10', label: 'Kategori', icon: 'layers-outline' as const, color: '#9D4EDD' },
-    { value: '27', label: 'Soru', icon: 'chatbubbles-outline' as const, color: '#FF6B9D' },
-    { value: `${parfumler.length}+`, label: 'Parfüm', icon: 'flask-outline' as const, color: '#00D4AA' },
-  ];
-
-  const features = [
-    { 
-      icon: 'finger-print-outline' as const, 
-      title: 'Kişisel pH Analizi', 
-      subtitle: 'Cildinize özel',
-      color: '#00D4AA',
-    },
-    { 
-      icon: 'bulb-outline' as const, 
-      title: 'Akıllı Öneri', 
-      subtitle: 'AI destekli',
-      color: '#FF8C42',
-    },
-    { 
-      icon: 'heart-outline' as const, 
-      title: '%95 Uyum', 
-      subtitle: 'Memnuniyet',
-      color: '#E63946',
-    },
-  ];
+  const logoScaleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: logoScale.value }],
+  }));
 
   return (
     <View style={styles.container}>
-      {/* Background Gradient */}
+      {/* Premium Background */}
       <LinearGradient
         colors={isDark 
-          ? ['#0A0A12', '#12101C', '#1A1428', '#120F1C'] 
-          : ['#FDFBFF', '#F8F0FA', '#F0E8F5', '#E8E0F0']}
-        locations={[0, 0.3, 0.6, 1]}
+          ? [LUXURY_COLORS.midnight, LUXURY_COLORS.charcoal, LUXURY_COLORS.slate, LUXURY_COLORS.charcoal]
+          : ['#FDFCFA', '#F9F6F0', '#F5F1E8', '#FBF9F5']}
+        locations={[0, 0.35, 0.7, 1]}
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Floating Orbs Background */}
-      <View style={styles.orbsContainer} pointerEvents="none">
-        <FloatingOrb delay={0} size={200} color={isDark ? '#9D4EDD15' : '#9D4EDD10'} startX={-50} startY={100} />
-        <FloatingOrb delay={1000} size={150} color={isDark ? '#FF6B9D12' : '#FF6B9D08'} startX={width - 80} startY={200} />
-        <FloatingOrb delay={500} size={120} color={isDark ? '#00D4AA10' : '#00D4AA08'} startX={50} startY={height - 300} />
-        <FloatingOrb delay={1500} size={180} color={isDark ? '#7B2CBF10' : '#7B2CBF08'} startX={width - 120} startY={height - 400} duration={5000} />
+      {/* Subtle ambient glows */}
+      <View style={styles.glowContainer} pointerEvents="none">
+        <FloatingGlow delay={0} size={300} color={isDark ? LUXURY_COLORS.gold + '08' : LUXURY_COLORS.gold + '12'} startX={width * 0.8} startY={height * 0.15} />
+        <FloatingGlow delay={1500} size={250} color={isDark ? LUXURY_COLORS.roseGold + '06' : LUXURY_COLORS.roseGold + '10'} startX={width * 0.2} startY={height * 0.7} />
+        <FloatingGlow delay={800} size={200} color={isDark ? LUXURY_COLORS.champagne + '05' : LUXURY_COLORS.champagne + '15'} startX={width * 0.5} startY={height * 0.4} />
         
-        {/* Sparkles */}
-        <Sparkle x={width * 0.2} y={height * 0.15} delay={0} />
-        <Sparkle x={width * 0.8} y={height * 0.25} delay={600} />
-        <Sparkle x={width * 0.15} y={height * 0.6} delay={1200} />
-        <Sparkle x={width * 0.85} y={height * 0.55} delay={1800} />
-        <Sparkle x={width * 0.5} y={height * 0.35} delay={400} />
+        {/* Diamond sparkles */}
+        <DiamondSparkle x={width * 0.15} y={height * 0.12} delay={0} size={6} />
+        <DiamondSparkle x={width * 0.85} y={height * 0.18} delay={800} size={8} />
+        <DiamondSparkle x={width * 0.1} y={height * 0.55} delay={1600} size={5} />
+        <DiamondSparkle x={width * 0.9} y={height * 0.45} delay={400} size={7} />
+        <DiamondSparkle x={width * 0.5} y={height * 0.08} delay={1200} size={6} />
       </View>
 
       <SafeAreaView style={styles.safeArea}>
+        {/* Top decorative line */}
+        <Animated.View entering={FadeIn.delay(200).duration(1000)} style={styles.topDecor}>
+          <View style={[styles.decorLine, { backgroundColor: LUXURY_COLORS.gold + '40' }]} />
+          <View style={[styles.decorDiamond, { backgroundColor: LUXURY_COLORS.gold }]} />
+          <View style={[styles.decorLine, { backgroundColor: LUXURY_COLORS.gold + '40' }]} />
+        </Animated.View>
+
         <View style={styles.content}>
           {/* Logo Section */}
           <Animated.View 
-            entering={FadeInDown.delay(200).duration(800).springify()} 
+            entering={FadeInDown.delay(300).duration(1000).springify()} 
             style={styles.logoSection}
           >
-            <Animated.View style={[styles.logoWrapper, logoAnimatedStyle]}>
-              {/* Outer glow */}
-              <View style={styles.logoGlow} />
+            <Animated.View style={[styles.logoWrapper, logoScaleStyle]}>
+              {/* Outer glow ring */}
+              <Animated.View style={[styles.logoOuterGlow, logoGlowStyle]} />
               
-              {/* Main logo */}
+              {/* Main logo container */}
+              <View style={styles.logoContainer}>
             <LinearGradient
-                colors={['#9D4EDD', '#7B2CBF', '#5A189A']}
-              style={styles.logoGradient}
+                  colors={[LUXURY_COLORS.gold, LUXURY_COLORS.goldDark, LUXURY_COLORS.gold]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
+                  style={styles.logoGradient}
             >
-                <View style={styles.logoInner}>
-                  <Ionicons name="sparkles" size={42} color="#FFFFFF" />
-                </View>
+                  <View style={styles.logoInner}>
+                    <Ionicons name="diamond-outline" size={38} color={isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.midnight} />
+                  </View>
             </LinearGradient>
+              </View>
               
-              {/* Decorative ring */}
-              <View style={styles.logoRing} />
+              {/* Decorative corner accents */}
+              <View style={[styles.cornerAccent, styles.cornerTopLeft, { borderColor: LUXURY_COLORS.gold }]} />
+              <View style={[styles.cornerAccent, styles.cornerTopRight, { borderColor: LUXURY_COLORS.gold }]} />
+              <View style={[styles.cornerAccent, styles.cornerBottomLeft, { borderColor: LUXURY_COLORS.gold }]} />
+              <View style={[styles.cornerAccent, styles.cornerBottomRight, { borderColor: LUXURY_COLORS.gold }]} />
             </Animated.View>
           </Animated.View>
 
-          {/* Title Section */}
-          <Animated.View entering={FadeInDown.delay(400).duration(800)}>
-            <ThemedText style={[styles.brandName, { color: colors.text }]}>
+          {/* Brand Name */}
+          <Animated.View entering={FadeInDown.delay(500).duration(800)}>
+            <ThemedText style={[styles.brandName, { color: isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.charcoal }]}>
               AROMIXEN
             </ThemedText>
-            <View style={styles.taglineContainer}>
-              <View style={[styles.taglineLine, { backgroundColor: colors.tint }]} />
-              <ThemedText style={[styles.tagline, { color: colors.textSecondary }]}>
-                Kişisel Koku Profili
-              </ThemedText>
-              <View style={[styles.taglineLine, { backgroundColor: colors.tint }]} />
-            </View>
+          </Animated.View>
+
+          {/* Elegant tagline */}
+          <Animated.View entering={FadeInDown.delay(700).duration(800)} style={styles.taglineWrapper}>
+            <View style={[styles.taglineLineLeft, { backgroundColor: LUXURY_COLORS.gold }]} />
+            <ThemedText style={[styles.tagline, { color: LUXURY_COLORS.gold }]}>
+              LUXURY FRAGRANCE CURATION
+            </ThemedText>
+            <View style={[styles.taglineLineRight, { backgroundColor: LUXURY_COLORS.gold }]} />
           </Animated.View>
 
           {/* Main Description */}
-          <Animated.View entering={FadeInDown.delay(600).duration(800)} style={styles.descriptionContainer}>
-            <ThemedText style={[styles.description, { color: colors.textSecondary }]}>
-              Cildinize, yaşam tarzınıza ve kişiliğinize{'\n'}
-              <ThemedText style={[styles.descriptionHighlight, { color: colors.tint }]}>
-                mükemmel uyumlu
-              </ThemedText>{' '}parfümü keşfedin
+          <Animated.View entering={FadeInDown.delay(900).duration(800)} style={styles.descriptionSection}>
+            <ThemedText style={[styles.description, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
+              Cildinize, kişiliğinize ve yaşam tarzınıza{'\n'}özel olarak tasarlanmış
+            </ThemedText>
+            <ThemedText style={[styles.descriptionHighlight, { color: LUXURY_COLORS.gold }]}>
+              koku deneyimi
             </ThemedText>
           </Animated.View>
 
-          {/* Features Row */}
-          <Animated.View entering={FadeInDown.delay(800).duration(800)} style={styles.featuresRow}>
-            {features.map((feature, index) => (
-              <Animated.View 
-                key={feature.title}
-                entering={SlideInRight.delay(900 + index * 100).duration(500)}
-                style={styles.featureItem}
-              >
-                <View style={[styles.featureIconContainer, { backgroundColor: feature.color + '20' }]}>
-                  <Ionicons name={feature.icon} size={22} color={feature.color} />
-                </View>
-                <ThemedText style={[styles.featureTitle, { color: colors.text }]}>
-                  {feature.title}
-                </ThemedText>
-                <ThemedText style={[styles.featureSubtitle, { color: colors.textMuted }]}>
-                  {feature.subtitle}
-                </ThemedText>
-              </Animated.View>
-            ))}
+          {/* Premium Features */}
+          <Animated.View entering={FadeInDown.delay(1100).duration(800)} style={styles.featuresSection}>
+            <View style={[styles.featureCard, { backgroundColor: isDark ? 'rgba(201, 169, 98, 0.08)' : 'rgba(201, 169, 98, 0.06)' }]}>
+              <FeatureItem 
+                icon="finger-print-outline" 
+                title="pH Analizi" 
+                value="Kişisel"
+                isDark={isDark}
+              />
+              <View style={[styles.featureDivider, { backgroundColor: LUXURY_COLORS.gold + '30' }]} />
+              <FeatureItem 
+                icon="flask-outline" 
+                title="Parfüm" 
+                value={`${parfumler.length}+`}
+                isDark={isDark}
+              />
+              <View style={[styles.featureDivider, { backgroundColor: LUXURY_COLORS.gold + '30' }]} />
+              <FeatureItem 
+                icon="ribbon-outline" 
+                title="Uyum" 
+                value="%95"
+                isDark={isDark}
+              />
+            </View>
           </Animated.View>
 
-          {/* Stats Section */}
-          <Animated.View entering={FadeInDown.delay(1000).duration(800)} style={styles.statsSection}>
-            <View style={[styles.statsCard, { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)' }]}>
-              {stats.map((stat, index) => (
-                <React.Fragment key={stat.label}>
-                  <Animated.View 
-                    entering={FadeIn.delay(1100 + index * 150).duration(500)}
-                    style={styles.statItem}
-                  >
-                    <View style={[styles.statIconContainer, { backgroundColor: stat.color + '20' }]}>
-                      <Ionicons name={stat.icon} size={18} color={stat.color} />
+          {/* Trust indicators */}
+          <Animated.View entering={FadeInDown.delay(1300).duration(800)} style={styles.trustSection}>
+            <View style={styles.trustItem}>
+              <Ionicons name="shield-checkmark" size={14} color={LUXURY_COLORS.gold} />
+              <ThemedText style={[styles.trustText, { color: isDark ? LUXURY_COLORS.champagne + 'AA' : LUXURY_COLORS.slate + 'AA' }]}>
+                Premium Koleksiyon
+              </ThemedText>
             </View>
-                    <ThemedText style={[styles.statValue, { color: stat.color }]}>
-                      {stat.value}
-                    </ThemedText>
-                    <ThemedText style={[styles.statLabel, { color: colors.textSecondary }]}>
-                      {stat.label}
-                    </ThemedText>
-                  </Animated.View>
-                  {index < stats.length - 1 && (
-            <View style={[styles.statDivider, { backgroundColor: colors.border }]} />
-                  )}
-                </React.Fragment>
-              ))}
+            <View style={[styles.trustDot, { backgroundColor: LUXURY_COLORS.gold }]} />
+            <View style={styles.trustItem}>
+              <Ionicons name="sparkles" size={14} color={LUXURY_COLORS.gold} />
+              <ThemedText style={[styles.trustText, { color: isDark ? LUXURY_COLORS.champagne + 'AA' : LUXURY_COLORS.slate + 'AA' }]}>
+                AI Destekli
+              </ThemedText>
             </View>
           </Animated.View>
         </View>
 
         {/* Bottom Section */}
-        <Animated.View entering={FadeInUp.delay(1200).duration(800)} style={styles.bottomContainer}>
-          {/* Journey Info */}
+        <Animated.View entering={FadeInUp.delay(1500).duration(800)} style={styles.bottomSection}>
+          {/* Journey info */}
           <View style={styles.journeyInfo}>
-            <View style={styles.journeyBadge}>
-              <Ionicons name="time-outline" size={14} color={colors.tint} />
-              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
-                ~5 dakika
+            <View style={styles.journeyItem}>
+              <Ionicons name="time-outline" size={16} color={LUXURY_COLORS.gold} />
+              <ThemedText style={[styles.journeyText, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
+                5 dakika
               </ThemedText>
             </View>
-            <View style={[styles.journeyDot, { backgroundColor: colors.border }]} />
-            <View style={styles.journeyBadge}>
-              <Ionicons name="shield-checkmark-outline" size={14} color="#00D4AA" />
-              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
+            <ThemedText style={[styles.journeyDivider, { color: LUXURY_COLORS.gold + '60' }]}>•</ThemedText>
+            <View style={styles.journeyItem}>
+              <Ionicons name="gift-outline" size={16} color={LUXURY_COLORS.gold} />
+              <ThemedText style={[styles.journeyText, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
                 Ücretsiz
               </ThemedText>
             </View>
           </View>
 
-          {/* CTA Button */}
+          {/* Premium CTA Button */}
           <Pressable 
             style={({ pressed }) => [
               styles.ctaButton,
@@ -361,27 +354,41 @@ export default function WelcomeScreen() {
             onPress={() => router.push('/onboarding')}
           >
             <LinearGradient
-              colors={['#9D4EDD', '#7B2CBF']}
+              colors={[LUXURY_COLORS.gold, LUXURY_COLORS.goldDark]}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={styles.ctaGradient}
             >
-              <ThemedText style={styles.ctaText}>Koku Yolculuğuna Başla</ThemedText>
-              <View style={styles.ctaIconContainer}>
-                <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+              <ThemedText style={styles.ctaText}>Deneyimi Başlat</ThemedText>
+              <View style={styles.ctaArrow}>
+                <Ionicons name="arrow-forward" size={18} color={LUXURY_COLORS.midnight} />
               </View>
             </LinearGradient>
           </Pressable>
 
-          {/* Bottom Note */}
-          <View style={styles.bottomNote}>
-            <Ionicons name="information-circle-outline" size={14} color={colors.textMuted} />
-            <ThemedText style={[styles.bottomNoteText, { color: colors.textMuted }]}>
-              10 kategori, 27 soruyla size özel parfüm profili oluşturuyoruz
+          {/* Subtle bottom note */}
+          <ThemedText style={[styles.bottomNote, { color: isDark ? LUXURY_COLORS.champagne + '80' : LUXURY_COLORS.slate + '80' }]}>
+            10 kategori • 27 soru • Kişiselleştirilmiş sonuçlar
           </ThemedText>
-          </View>
         </Animated.View>
       </SafeAreaView>
+    </View>
+  );
+}
+
+// Feature Item Component
+function FeatureItem({ icon, title, value, isDark }: { icon: string; title: string; value: string; isDark: boolean }) {
+  return (
+    <View style={styles.featureItem}>
+      <View style={[styles.featureIconBg, { backgroundColor: LUXURY_COLORS.gold + '15' }]}>
+        <Ionicons name={icon as any} size={20} color={LUXURY_COLORS.gold} />
+      </View>
+      <ThemedText style={[styles.featureValue, { color: isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.charcoal }]}>
+        {value}
+      </ThemedText>
+      <ThemedText style={[styles.featureTitle, { color: isDark ? LUXURY_COLORS.champagne + 'CC' : LUXURY_COLORS.slate + 'CC' }]}>
+        {title}
+      </ThemedText>
     </View>
   );
 }
@@ -390,13 +397,32 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1,
   },
-  orbsContainer: {
+  glowContainer: {
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
   },
   safeArea: { 
     flex: 1,
   },
+  
+  // Top Decoration
+  topDecor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.lg,
+    gap: Spacing.md,
+  },
+  decorLine: {
+    width: 50,
+    height: 1,
+  },
+  decorDiamond: {
+    width: 8,
+    height: 8,
+    transform: [{ rotate: '45deg' }],
+  },
+  
   content: { 
     flex: 1, 
     justifyContent: 'center', 
@@ -406,229 +432,263 @@ const styles = StyleSheet.create({
   
   // Logo Styles
   logoSection: {
-    marginBottom: Spacing['2xl'],
+    marginBottom: Spacing.xl,
   },
   logoWrapper: {
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logoGlow: {
-    position: 'absolute',
     width: 140,
     height: 140,
-    borderRadius: 70,
-    backgroundColor: '#9D4EDD',
-    opacity: 0.15,
+  },
+  logoOuterGlow: {
+    position: 'absolute',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: LUXURY_COLORS.gold,
+  },
+  logoContainer: {
+    shadowColor: LUXURY_COLORS.gold,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 24,
+    elevation: 20,
   },
   logoGradient: {
-    width: 110,
-    height: 110,
-    borderRadius: 32,
+    width: 100,
+    height: 100,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#9D4EDD',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 15,
+    borderWidth: 1,
+    borderColor: LUXURY_COLORS.goldLight + '40',
   },
   logoInner: {
-    width: 90,
-    height: 90,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoRing: {
+  cornerAccent: {
     position: 'absolute',
-    width: 130,
-    height: 130,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: 'rgba(157, 78, 221, 0.3)',
+    width: 16,
+    height: 16,
+    borderWidth: 1.5,
+  },
+  cornerTopLeft: {
+    top: 8,
+    left: 8,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderTopLeftRadius: 4,
+  },
+  cornerTopRight: {
+    top: 8,
+    right: 8,
+    borderLeftWidth: 0,
+    borderBottomWidth: 0,
+    borderTopRightRadius: 4,
+  },
+  cornerBottomLeft: {
+    bottom: 8,
+    left: 8,
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 4,
+  },
+  cornerBottomRight: {
+    bottom: 8,
+    right: 8,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    borderBottomRightRadius: 4,
   },
   
-  // Title Styles
+  // Brand Name
   brandName: {
-    fontSize: 38,
-    fontWeight: '800',
-    letterSpacing: 8,
+    fontSize: 34,
+    fontWeight: '300',
+    letterSpacing: 14,
     textAlign: 'center',
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.md,
   },
-  taglineContainer: {
+  
+  // Tagline
+  taglineWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: Spacing.md,
+    marginBottom: Spacing['2xl'],
   },
-  taglineLine: {
-    width: 30,
+  taglineLineLeft: {
+    width: 24,
     height: 1,
+    marginRight: Spacing.md,
+  },
+  taglineLineRight: {
+    width: 24,
+    height: 1,
+    marginLeft: Spacing.md,
   },
   tagline: {
-    fontSize: FontSizes.sm,
+    fontSize: 10,
     fontWeight: '600',
-    letterSpacing: 3,
-    textTransform: 'uppercase',
+    letterSpacing: 4,
   },
   
-  // Description Styles
-  descriptionContainer: {
-    marginTop: Spacing['2xl'],
-    marginBottom: Spacing.xl,
+  // Description
+  descriptionSection: {
+    alignItems: 'center',
+    marginBottom: Spacing['2xl'],
   },
   description: {
-    fontSize: FontSizes.base,
+    fontSize: 16,
     textAlign: 'center',
     lineHeight: 26,
+    fontWeight: '300',
+    marginBottom: Spacing.xs,
   },
   descriptionHighlight: {
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '600',
+    letterSpacing: 2,
   },
   
-  // Features Styles
-  featuresRow: {
+  // Features
+  featuresSection: {
+    width: '100%',
+    marginBottom: Spacing.xl,
+  },
+  featureCard: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: Spacing.lg,
-    marginBottom: Spacing['2xl'],
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.xl,
+    borderWidth: 1,
+    borderColor: LUXURY_COLORS.gold + '20',
   },
   featureItem: {
     alignItems: 'center',
-    width: (width - Spacing.xl * 2 - Spacing.lg * 2) / 3,
-  },
-  featureIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
-  },
-  featureTitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 2,
-  },
-  featureSubtitle: {
-    fontSize: 10,
-    textAlign: 'center',
-  },
-  
-  // Stats Styles
-  statsSection: {
-    width: '100%',
-  },
-  statsCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.xl,
-    borderRadius: BorderRadius.xl,
-    gap: Spacing.lg,
-  },
-  statItem: {
-    alignItems: 'center',
     flex: 1,
   },
-  statIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
+  featureIconBg: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.xs,
   },
-  statValue: {
-    fontSize: FontSizes.xl,
-    fontWeight: '800',
+  featureValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 2,
   },
-  statLabel: {
-    fontSize: FontSizes.xs,
+  featureTitle: {
+    fontSize: 11,
     fontWeight: '500',
+    letterSpacing: 0.5,
   },
-  statDivider: {
+  featureDivider: {
     width: 1,
     height: 50,
-    opacity: 0.3,
   },
   
-  // Bottom Section Styles
-  bottomContainer: {
-    paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.xl,
+  // Trust Section
+  trustSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.md,
+  },
+  trustItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  trustText: {
+    fontSize: 12,
+    fontWeight: '500',
+    letterSpacing: 0.3,
+  },
+  trustDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+  },
+  
+  // Bottom Section
+  bottomSection: {
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing['2xl'],
+    gap: Spacing.lg,
   },
   journeyInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.md,
-    marginBottom: Spacing.sm,
   },
-  journeyBadge: {
+  journeyItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
   },
   journeyText: {
-    fontSize: FontSizes.sm,
+    fontSize: 13,
     fontWeight: '500',
   },
-  journeyDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
+  journeyDivider: {
+    fontSize: 16,
   },
+  
+  // CTA Button
   ctaButton: {
-    borderRadius: BorderRadius.xl,
+    borderRadius: BorderRadius.lg,
     overflow: 'hidden',
-    shadowColor: '#9D4EDD',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowColor: LUXURY_COLORS.gold,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
   },
   ctaButtonPressed: {
     transform: [{ scale: 0.98 }],
-    opacity: 0.9,
+    opacity: 0.95,
   },
   ctaGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacing.lg,
+    paddingVertical: Spacing.lg + 2,
     paddingHorizontal: Spacing['2xl'],
     gap: Spacing.md,
   },
   ctaText: {
-    fontSize: FontSizes.base,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: 0.5,
+    fontSize: 15,
+    fontWeight: '600',
+    color: LUXURY_COLORS.midnight,
+    letterSpacing: 1.5,
   },
-  ctaIconContainer: {
+  ctaArrow: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(12, 18, 34, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  
+  // Bottom Note
   bottomNote: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-  },
-  bottomNoteText: {
-    fontSize: FontSizes.xs,
+    fontSize: 11,
     textAlign: 'center',
+    letterSpacing: 1,
+    fontWeight: '400',
   },
 });
