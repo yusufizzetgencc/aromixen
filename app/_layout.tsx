@@ -4,12 +4,17 @@
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AppProvider } from '@/context/AppContext';
 import { Colors } from '@/constants/theme';
+import { AppProvider, useApp } from '@/context/AppContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 // Custom themes
 const KokuLightTheme = {
@@ -36,20 +41,42 @@ const KokuDarkTheme = {
   },
 };
 
-export default function RootLayout() {
+function RootLayoutContent() {
   const colorScheme = useColorScheme();
+  const { isDataLoaded } = useApp();
+
+  useEffect(() => {
+    if (isDataLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [isDataLoaded]);
 
   return (
+    <ThemeProvider value={colorScheme === 'dark' ? KokuDarkTheme : KokuLightTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="welcome" />
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="results" />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="calendar" />
+        <Stack.Screen name="compare" />
+        <Stack.Screen name="gift" />
+        <Stack.Screen name="journal" />
+        <Stack.Screen name="layering" />
+        <Stack.Screen name="mood" />
+        <Stack.Screen name="spin" />
+        <Stack.Screen name="parfum/[id]" />
+      </Stack>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <AppProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? KokuDarkTheme : KokuLightTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="results" />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      </ThemeProvider>
+      <RootLayoutContent />
     </AppProvider>
   );
 }
