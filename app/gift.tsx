@@ -14,24 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button, Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Butce, CiltTipi, Cinsiyet, GiftOccasion, GiftRecipient, KisilikTipi, Parfum, TerlemeOrani, YasGrubu } from '@/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-  'Tatlı': '#FF69B4',
-  'Amber': '#D4A574',
-  'Meyvemsi': '#FF6B6B',
-};
 
 // Alıcı tipleri
 const RECIPIENTS: { id: GiftRecipient; label: string; icon: string; gender: Cinsiyet; color: string }[] = [
@@ -632,7 +620,7 @@ export default function GiftScreen() {
                 <Animated.View entering={FadeIn.duration(300)}>
                   <Card variant="elevated" style={styles.phPreviewCard}>
                     <LinearGradient
-                      colors={['#00D4AA', '#00B4D8']}
+                      colors={[colors.success, colors.success + '80']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.phPreviewGradient}
@@ -706,9 +694,9 @@ export default function GiftScreen() {
                         <Card variant="elevated" style={styles.resultCard}>
                           <View style={styles.resultHeader}>
                             <View style={[styles.resultIcon, { 
-                              backgroundColor: (TYPE_COLORS[item.parfum.tip] || colors.tint) + '15' 
+                              backgroundColor: (ScentTypeColors[item.parfum.tip] || colors.tint) + '15' 
                             }]}>
-                              <Ionicons name="gift" size={18} color={TYPE_COLORS[item.parfum.tip] || colors.tint} />
+                              <Ionicons name="gift" size={18} color={ScentTypeColors[item.parfum.tip] || colors.tint} />
                             </View>
                             <View style={[styles.matchBadge, { backgroundColor: recipientData?.color + '15' }]}>
                               <ThemedText style={{ color: recipientData?.color, fontSize: 10, fontWeight: '700' }}>
@@ -726,10 +714,10 @@ export default function GiftScreen() {
                           
                           <View style={styles.resultTypePHRow}>
                             <View style={[styles.resultType, { 
-                              backgroundColor: (TYPE_COLORS[item.parfum.tip] || colors.tint) + '10' 
+                              backgroundColor: (ScentTypeColors[item.parfum.tip] || colors.tint) + '10' 
                             }]}>
                               <ThemedText style={{ 
-                                color: TYPE_COLORS[item.parfum.tip] || colors.tint, 
+                                color: ScentTypeColors[item.parfum.tip] || colors.tint, 
                                 fontSize: 10 
                               }}>
                                 {item.parfum.tip}
@@ -738,15 +726,15 @@ export default function GiftScreen() {
                             
                             {recipientSkinType && (
                               <View style={[styles.phBadge, { 
-                                backgroundColor: item.phCompatibility >= 70 ? '#00D4AA20' : item.phCompatibility >= 50 ? '#FFB02020' : '#FF6B6B20' 
+                                backgroundColor: item.phCompatibility >= 70 ? colors.success + '20' : item.phCompatibility >= 50 ? colors.warning + '20' : colors.error + '20' 
                               }]}>
                                 <Ionicons 
                                   name="water" 
                                   size={8} 
-                                  color={item.phCompatibility >= 70 ? '#00D4AA' : item.phCompatibility >= 50 ? '#FFB020' : '#FF6B6B'} 
+                                  color={item.phCompatibility >= 70 ? colors.success : item.phCompatibility >= 50 ? colors.warning : colors.error} 
                                 />
                                 <ThemedText style={{ 
-                                  color: item.phCompatibility >= 70 ? '#00D4AA' : item.phCompatibility >= 50 ? '#FFB020' : '#FF6B6B', 
+                                  color: item.phCompatibility >= 70 ? colors.success : item.phCompatibility >= 50 ? colors.warning : colors.error, 
                                   fontSize: 9,
                                   fontWeight: '700',
                                 }}>

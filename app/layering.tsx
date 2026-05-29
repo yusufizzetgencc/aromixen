@@ -14,27 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { LayeringRule, Parfum } from '@/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-  'Tatlı': '#FF69B4',
-  'Amber': '#D4A574',
-  'Meyvemsi': '#FF6B6B',
-  'Yeşil': '#4CAF50',
-  'Deri': '#6B4423',
-  'Pudralı': '#DDA0DD',
-};
 
 // Katmanlama kuralları
 const LAYERING_RULES: LayeringRule[] = [
@@ -235,17 +220,17 @@ export default function LayeringScreen() {
               <Card variant="elevated" style={styles.selectedCard}>
                 <View style={styles.selectedHeader}>
                   <View style={[styles.selectedIcon, { 
-                    backgroundColor: (TYPE_COLORS[selectedBase.tip] || colors.tint) + '15' 
+                    backgroundColor: (ScentTypeColors[selectedBase.tip] || colors.tint) + '15' 
                   }]}>
-                    <Ionicons name="layers" size={24} color={TYPE_COLORS[selectedBase.tip] || colors.tint} />
+                    <Ionicons name="layers" size={24} color={ScentTypeColors[selectedBase.tip] || colors.tint} />
                   </View>
                   <View style={styles.selectedInfo}>
                     <ThemedText type="caption" style={{ color: colors.textMuted }}>
                       Baz Parfüm
                     </ThemedText>
                     <ThemedText type="heading">{selectedBase.isim}</ThemedText>
-                    <View style={[styles.typeBadge, { backgroundColor: (TYPE_COLORS[selectedBase.tip] || colors.tint) + '15' }]}>
-                      <ThemedText style={{ color: TYPE_COLORS[selectedBase.tip] || colors.tint, fontSize: FontSizes.sm }}>
+                    <View style={[styles.typeBadge, { backgroundColor: (ScentTypeColors[selectedBase.tip] || colors.tint) + '15' }]}>
+                      <ThemedText style={{ color: ScentTypeColors[selectedBase.tip] || colors.tint, fontSize: FontSizes.sm }}>
                         {selectedBase.tip}
                       </ThemedText>
                     </View>
@@ -268,9 +253,9 @@ export default function LayeringScreen() {
                       {currentRule.compatibleTypes.map((type) => (
                         <View 
                           key={type} 
-                          style={[styles.compatibleType, { backgroundColor: (TYPE_COLORS[type] || colors.tint) + '15' }]}
+                          style={[styles.compatibleType, { backgroundColor: (ScentTypeColors[type] || colors.tint) + '15' }]}
                         >
-                          <ThemedText style={{ color: TYPE_COLORS[type] || colors.tint, fontSize: FontSizes.xs }}>
+                          <ThemedText style={{ color: ScentTypeColors[type] || colors.tint, fontSize: FontSizes.xs }}>
                             {type}
                           </ThemedText>
                         </View>
@@ -282,7 +267,7 @@ export default function LayeringScreen() {
             ) : (
               <Card variant="elevated" style={styles.selectPrompt}>
                 <LinearGradient
-                  colors={['#9D4EDD', '#7B2CBF']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.promptGradient}
@@ -313,12 +298,12 @@ export default function LayeringScreen() {
                       <Card variant="elevated" style={styles.suggestionCard}>
                         <View style={styles.suggestionHeader}>
                           <View style={[styles.suggestionIcon, { 
-                            backgroundColor: (TYPE_COLORS[item.parfum.tip] || colors.tint) + '15' 
+                            backgroundColor: (ScentTypeColors[item.parfum.tip] || colors.tint) + '15' 
                           }]}>
                             <Ionicons 
                               name="sparkles" 
                               size={18} 
-                              color={TYPE_COLORS[item.parfum.tip] || colors.tint} 
+                              color={ScentTypeColors[item.parfum.tip] || colors.tint} 
                             />
                           </View>
                           <View style={styles.scoreCircle}>
@@ -336,10 +321,10 @@ export default function LayeringScreen() {
                         </ThemedText>
                         
                         <View style={[styles.suggestionType, { 
-                          backgroundColor: (TYPE_COLORS[item.parfum.tip] || colors.tint) + '10' 
+                          backgroundColor: (ScentTypeColors[item.parfum.tip] || colors.tint) + '10' 
                         }]}>
                           <ThemedText style={{ 
-                            color: TYPE_COLORS[item.parfum.tip] || colors.tint, 
+                            color: ScentTypeColors[item.parfum.tip] || colors.tint, 
                             fontSize: 10 
                           }}>
                             {item.parfum.tip}
@@ -415,12 +400,12 @@ export default function LayeringScreen() {
                         <Pressable onPress={() => handleSelectBase(parfum)}>
                           <Card variant="elevated" style={styles.selectCard}>
                             <View style={[styles.selectCardIcon, { 
-                              backgroundColor: (TYPE_COLORS[parfum.tip] || colors.tint) + '15' 
+                              backgroundColor: (ScentTypeColors[parfum.tip] || colors.tint) + '15' 
                             }]}>
                               <Ionicons 
                                 name="sparkles" 
                                 size={18} 
-                                color={TYPE_COLORS[parfum.tip] || colors.tint} 
+                                color={ScentTypeColors[parfum.tip] || colors.tint} 
                               />
                             </View>
                             <ThemedText type="subtitle" numberOfLines={1} style={styles.selectCardName}>
@@ -443,7 +428,7 @@ export default function LayeringScreen() {
                   Koku Tipine Göre
                 </ThemedText>
                 <View style={styles.typeGrid}>
-                  {Object.entries(TYPE_COLORS).slice(0, 6).map(([type, color]) => {
+                  {Object.entries(ScentTypeColors).slice(0, 6).map(([type, color]) => {
                     const count = parfumler.filter(p => p.tip === type).length;
                     if (count === 0) return null;
                     
@@ -597,13 +582,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scoreCircle: {
-    backgroundColor: 'rgba(157,78,221,0.1)',
+    backgroundColor: 'rgba(92, 64, 102, 0.1)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: BorderRadius.full,
   },
   scoreText: {
-    color: '#9D4EDD',
+    color: '#5C4066',
     fontSize: 11,
     fontWeight: FontWeights.bold,
   },

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
@@ -39,15 +39,6 @@ const OCCASIONS = [
   { id: 'parti', label: 'Parti', icon: 'sparkles', color: '#9D4EDD' },
   { id: 'spor', label: 'Spor', icon: 'fitness', color: '#00D4AA' },
 ];
-
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-};
 
 export default function CalendarScreen() {
   const router = useRouter();
@@ -252,7 +243,7 @@ export default function CalendarScreen() {
 
                   const entry = getEntryForDate(day);
                   const parfum = entry ? parfumler.find(p => p.id === entry.parfumId) : null;
-                  const typeColor = parfum ? (TYPE_COLORS[parfum.tip] || colors.tint) : null;
+                  const typeColor = parfum ? (ScentTypeColors[parfum.tip] || colors.tint) : null;
 
                   return (
                     <Pressable 
@@ -287,7 +278,7 @@ export default function CalendarScreen() {
           <Animated.View entering={FadeInUp.delay(200).duration(400)}>
             <View style={styles.statsRow}>
               <Card variant="elevated" style={styles.statCard}>
-                <ThemedText style={[styles.statNumber, { color: '#9D4EDD' }]}>
+                <ThemedText style={[styles.statNumber, { color: colors.primary }]}>
                   {stats.totalDays}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -295,7 +286,7 @@ export default function CalendarScreen() {
                 </ThemedText>
               </Card>
               <Card variant="elevated" style={styles.statCard}>
-                <ThemedText style={[styles.statNumber, { color: '#00B4D8' }]}>
+                <ThemedText style={[styles.statNumber, { color: colors.tint }]}>
                   {stats.uniqueParfums}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -310,8 +301,8 @@ export default function CalendarScreen() {
             <Animated.View entering={FadeInUp.delay(300).duration(400)}>
               <Card variant="elevated" style={styles.topParfumCard}>
                 <View style={styles.topHeader}>
-                  <View style={[styles.topIcon, { backgroundColor: '#FFD93D20' }]}>
-                    <Ionicons name="trophy" size={20} color="#FFD93D" />
+                  <View style={[styles.topIcon, { backgroundColor: colors.warning + '20' }]}>
+                    <Ionicons name="trophy" size={20} color={colors.warning} />
                   </View>
                   <View style={styles.topInfo}>
                     <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -338,7 +329,7 @@ export default function CalendarScreen() {
                   const parfum = parfumler.find(p => p.id === entry.parfumId);
                   if (!parfum) return null;
                   
-                  const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+                  const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
                   const occasion = OCCASIONS.find(o => o.id === entry.occasion);
                   
                   return (
@@ -371,7 +362,7 @@ export default function CalendarScreen() {
                         </View>
                         {entry.rating && (
                           <View style={styles.ratingBadge}>
-                            <Ionicons name="star" size={12} color="#FFD93D" />
+                            <Ionicons name="star" size={12} color={colors.warning} />
                             <ThemedText style={styles.ratingText}>{entry.rating}</ThemedText>
                           </View>
                         )}
@@ -418,9 +409,9 @@ export default function CalendarScreen() {
                   <Card variant="elevated" style={styles.selectedParfumCard}>
                     <View style={styles.selectedParfumRow}>
                       <View style={[styles.selectedIcon, { 
-                        backgroundColor: (TYPE_COLORS[selectedParfum.tip] || colors.tint) + '15' 
+                        backgroundColor: (ScentTypeColors[selectedParfum.tip] || colors.tint) + '15' 
                       }]}>
-                        <Ionicons name="sparkles" size={24} color={TYPE_COLORS[selectedParfum.tip] || colors.tint} />
+                        <Ionicons name="sparkles" size={24} color={ScentTypeColors[selectedParfum.tip] || colors.tint} />
                       </View>
                       <View style={styles.selectedInfo}>
                         <ThemedText type="heading">{selectedParfum.isim}</ThemedText>
@@ -476,7 +467,7 @@ export default function CalendarScreen() {
                       <Ionicons 
                         name={rating >= star ? 'star' : 'star-outline'} 
                         size={32} 
-                        color={rating >= star ? '#FFD93D' : colors.textMuted} 
+                        color={rating >= star ? colors.warning : colors.textMuted} 
                       />
                     </Pressable>
                   ))}
@@ -513,9 +504,9 @@ export default function CalendarScreen() {
                             >
                               <Card variant="elevated" style={styles.parfumSelectCard}>
                                 <View style={[styles.parfumSelectIcon, { 
-                                  backgroundColor: (TYPE_COLORS[parfum.tip] || colors.tint) + '15' 
+                                  backgroundColor: (ScentTypeColors[parfum.tip] || colors.tint) + '15' 
                                 }]}>
-                                  <Ionicons name="sparkles" size={16} color={TYPE_COLORS[parfum.tip] || colors.tint} />
+                                  <Ionicons name="sparkles" size={16} color={ScentTypeColors[parfum.tip] || colors.tint} />
                                 </View>
                                 <ThemedText numberOfLines={1} style={styles.parfumSelectName}>
                                   {parfum.isim}
@@ -541,9 +532,9 @@ export default function CalendarScreen() {
                             >
                               <Card variant="elevated" style={styles.parfumSelectCard}>
                                 <View style={[styles.parfumSelectIcon, { 
-                                  backgroundColor: (TYPE_COLORS[parfum.tip] || colors.tint) + '15' 
+                                  backgroundColor: (ScentTypeColors[parfum.tip] || colors.tint) + '15' 
                                 }]}>
-                                  <Ionicons name="sparkles" size={16} color={TYPE_COLORS[parfum.tip] || colors.tint} />
+                                  <Ionicons name="sparkles" size={16} color={ScentTypeColors[parfum.tip] || colors.tint} />
                                 </View>
                                 <ThemedText numberOfLines={1} style={styles.parfumSelectName}>
                                   {parfum.isim}

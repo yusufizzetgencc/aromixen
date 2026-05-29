@@ -118,8 +118,8 @@ export default function ProfileScreen() {
   const handleShareProfile = async () => {
     try {
       await Share.share({
-        title: 'Koku DNA\'m - AROMIXEN',
-        message: `${scentIdentity.emoji} Koku kimliğim: ${scentIdentity.title}\n${scentIdentity.desc}\n\n#AROMIXEN`,
+        title: 'Koku DNA\'m - AURAM',
+        message: `${scentIdentity.emoji} Koku kimliğim: ${scentIdentity.title}\n${scentIdentity.desc}\n\n#AURAM`,
       });
     } catch (error) {
       console.error('Share error:', error);
@@ -180,15 +180,15 @@ export default function ProfileScreen() {
           {/* Stats */}
           <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.statsRow}>
             <View style={[styles.statCard, { backgroundColor: colors.card }]}>
-              <ThemedText style={[styles.statNumber, { color: '#FF6B9D' }]}>{favorites.length}</ThemedText>
+              <ThemedText style={[styles.statNumber, { color: colors.accent }]}>{favorites.length}</ThemedText>
               <ThemedText type="caption" style={{ color: colors.textMuted }}>Favori</ThemedText>
             </View>
             <View style={[styles.statCard, { backgroundColor: colors.card }]}>
-              <ThemedText style={[styles.statNumber, { color: '#9D4EDD' }]}>{collections.length}</ThemedText>
+              <ThemedText style={[styles.statNumber, { color: colors.primary }]}>{collections.length}</ThemedText>
               <ThemedText type="caption" style={{ color: colors.textMuted }}>Koleksiyon</ThemedText>
             </View>
             <View style={[styles.statCard, { backgroundColor: colors.card }]}>
-              <ThemedText style={[styles.statNumber, { color: '#00B4D8' }]}>{recentlyViewed.length}</ThemedText>
+              <ThemedText style={[styles.statNumber, { color: colors.accent }]}>{recentlyViewed.length}</ThemedText>
               <ThemedText type="caption" style={{ color: colors.textMuted }}>Görüntülenen</ThemedText>
             </View>
           </Animated.View>
@@ -199,8 +199,8 @@ export default function ProfileScreen() {
               <Card variant="elevated" style={styles.dnaCard}>
                 <View style={styles.dnaHeader}>
                   <View style={styles.dnaHeaderLeft}>
-                    <View style={[styles.iconBg, { backgroundColor: '#9D4EDD15' }]}>
-                      <Ionicons name="finger-print" size={18} color="#9D4EDD" />
+                    <View style={[styles.iconBg, { backgroundColor: colors.primary + '15' }]}>
+                      <Ionicons name="finger-print" size={18} color={colors.primary} />
                     </View>
                     <ThemedText type="heading">Koku DNA</ThemedText>
                   </View>
@@ -213,7 +213,7 @@ export default function ProfileScreen() {
                   <RadarChart data={radarData} size={Math.min(SCREEN_WIDTH - 80, 260)} animate={true} />
                 </View>
                 
-                <LinearGradient colors={['#9D4EDD', '#7B2CBF']} style={styles.identityCard}>
+                <LinearGradient colors={colors.gradient} style={styles.identityCard}>
                   <ThemedText style={styles.identityEmoji}>{scentIdentity.emoji}</ThemedText>
                   <ThemedText style={styles.identityTitle}>{scentIdentity.title}</ThemedText>
                   <ThemedText style={styles.identityDesc}>{scentIdentity.desc}</ThemedText>
@@ -230,14 +230,14 @@ export default function ProfileScreen() {
             <Animated.View entering={FadeInUp.delay(400).duration(400)}>
               <Card variant="elevated" style={styles.phCard}>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.iconBg, { backgroundColor: '#00D4AA15' }]}>
-                    <Ionicons name="water" size={18} color="#00D4AA" />
+                  <View style={[styles.iconBg, { backgroundColor: colors.success + '15' }]}>
+                    <Ionicons name="water" size={18} color={colors.success} />
                   </View>
                   <ThemedText type="heading">pH Profilim</ThemedText>
                 </View>
                 
                 <View style={styles.phContent}>
-                  <View style={styles.phCircle}>
+                  <View style={[styles.phCircle, { borderColor: colors.success }]}>
                     <ThemedText style={styles.phValue}>{kullaniciPH.toFixed(1)}</ThemedText>
                     <ThemedText type="caption" style={{ color: colors.textMuted }}>pH</ThemedText>
                   </View>
@@ -343,7 +343,7 @@ export default function ProfileScreen() {
             <View style={[styles.appLogo, { backgroundColor: colors.tint + '15' }]}>
               <Ionicons name="sparkles" size={16} color={colors.tint} />
             </View>
-            <ThemedText type="caption" style={{ color: colors.textMuted }}>AROMIXEN v1.0.0</ThemedText>
+            <ThemedText type="caption" style={{ color: colors.textMuted }}>AURAM v1.0.0</ThemedText>
           </View>
 
           <View style={{ height: 120 }} />
@@ -383,15 +383,15 @@ const styles = StyleSheet.create({
   radarContainer: { alignItems: 'center', marginBottom: Spacing.lg },
   identityCard: { padding: Spacing.lg, borderRadius: BorderRadius.xl, alignItems: 'center' },
   identityEmoji: { fontSize: 32, marginBottom: Spacing.xs },
-  identityTitle: { color: '#FFF', fontSize: FontSizes.lg, fontWeight: FontWeights.bold },
-  identityDesc: { color: 'rgba(255,255,255,0.8)', fontSize: FontSizes.sm, textAlign: 'center', marginTop: 4, marginBottom: Spacing.sm },
-  identityBadge: { backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: Spacing.md, paddingVertical: 4, borderRadius: BorderRadius.full },
-  identityBadgeText: { color: '#FFF', fontSize: FontSizes.sm, fontWeight: FontWeights.semiBold },
+  identityTitle: { fontSize: FontSizes.lg, fontWeight: FontWeights.bold },
+  identityDesc: { fontSize: FontSizes.sm, textAlign: 'center', marginTop: 4, marginBottom: Spacing.sm, opacity: 0.8 },
+  identityBadge: { backgroundColor: 'rgba(120,120,120,0.2)', paddingHorizontal: Spacing.md, paddingVertical: 4, borderRadius: BorderRadius.full },
+  identityBadgeText: { fontSize: FontSizes.sm, fontWeight: FontWeights.semiBold },
   phCard: { marginBottom: Spacing.lg, padding: Spacing.lg },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.md },
   iconBg: { width: 32, height: 32, borderRadius: BorderRadius.md, justifyContent: 'center', alignItems: 'center' },
   phContent: { flexDirection: 'row', alignItems: 'center', gap: Spacing.lg },
-  phCircle: { width: 64, height: 64, borderRadius: 32, borderWidth: 3, borderColor: '#00D4AA', justifyContent: 'center', alignItems: 'center' },
+  phCircle: { width: 64, height: 64, borderRadius: 32, borderWidth: 3, justifyContent: 'center', alignItems: 'center' },
   phValue: { fontSize: FontSizes.xl, fontWeight: FontWeights.bold },
   phInfo: { flex: 1, gap: Spacing.xs },
   phRow: { flexDirection: 'row', justifyContent: 'space-between' },

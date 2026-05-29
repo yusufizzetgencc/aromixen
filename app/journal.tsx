@@ -14,7 +14,7 @@ import Animated, { FadeIn, FadeInDown, FadeInUp, SlideInRight, SlideOutLeft } fr
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card, Button } from '@/components/ui';
-import { Colors, Spacing, BorderRadius, FontSizes, FontWeights } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes, FontWeights, ScentTypeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 import { JournalEntry, Parfum, MoodType } from '@/types';
@@ -26,17 +26,6 @@ import {
 } from '@/services/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-  'Tatlı': '#FF69B4',
-  'Amber': '#D4A574',
-};
 
 const MOODS: { id: MoodType; emoji: string; label: string; color: string }[] = [
   { id: 'enerjik', emoji: '⚡', label: 'Enerjik', color: '#FF6B6B' },
@@ -246,8 +235,8 @@ export default function JournalScreen() {
           <Animated.View entering={FadeInUp.delay(100).duration(400)}>
             <View style={styles.statsRow}>
               <Card variant="elevated" style={styles.statCard}>
-                <Ionicons name="book" size={20} color="#9D4EDD" />
-                <ThemedText style={[styles.statNumber, { color: '#9D4EDD' }]}>
+                <Ionicons name="book" size={20} color={colors.primary} />
+                <ThemedText style={[styles.statNumber, { color: colors.primary }]}>
                   {stats.totalEntries}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -255,8 +244,8 @@ export default function JournalScreen() {
                 </ThemedText>
               </Card>
               <Card variant="elevated" style={styles.statCard}>
-                <Ionicons name="star" size={20} color="#FFD93D" />
-                <ThemedText style={[styles.statNumber, { color: '#FFD93D' }]}>
+                <Ionicons name="star" size={20} color={colors.warning} />
+                <ThemedText style={[styles.statNumber, { color: colors.warning }]}>
                   {stats.avgRating}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -264,8 +253,8 @@ export default function JournalScreen() {
                 </ThemedText>
               </Card>
               <Card variant="elevated" style={styles.statCard}>
-                <Ionicons name="heart" size={20} color="#FF6B9D" />
-                <ThemedText style={[styles.statNumber, { color: '#FF6B9D' }]}>
+                <Ionicons name="heart" size={20} color={colors.accent} />
+                <ThemedText style={[styles.statNumber, { color: colors.accent }]}>
                   {stats.favoriteDays}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -280,7 +269,7 @@ export default function JournalScreen() {
             <Animated.View entering={FadeIn.duration(400)}>
               <Card variant="elevated" style={styles.emptyCard}>
                 <LinearGradient
-                  colors={['#9D4EDD', '#7B2CBF']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.emptyGradient}
@@ -296,7 +285,7 @@ export default function JournalScreen() {
                     onPress={() => { resetForm(); setShowAddModal(true); }}
                     style={styles.emptyBtn}
                   >
-                    <ThemedText style={{ color: '#9D4EDD', fontWeight: '600' }}>
+                    <ThemedText style={{ color: colors.primary, fontWeight: '600' }}>
                       İlk Kaydı Oluştur
                     </ThemedText>
                   </Pressable>
@@ -311,7 +300,7 @@ export default function JournalScreen() {
                 
                 const moodData = MOODS.find(m => m.id === entry.mood);
                 const occasionData = OCCASIONS.find(o => o.id === entry.occasion);
-                const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+                const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
                 
                 return (
                   <Animated.View 
@@ -330,7 +319,7 @@ export default function JournalScreen() {
                               {parfum.isim}
                             </ThemedText>
                             {entry.isFavoriteDay && (
-                              <Ionicons name="heart" size={14} color="#FF6B9D" />
+                              <Ionicons name="heart" size={14} color={colors.accent} />
                             )}
                           </View>
                           <ThemedText type="caption" style={{ color: colors.textMuted }}>
@@ -346,7 +335,7 @@ export default function JournalScreen() {
                             <Ionicons name="pencil" size={18} color={colors.textMuted} />
                           </Pressable>
                           <Pressable onPress={() => handleDelete(entry.id)}>
-                            <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
+                            <Ionicons name="trash-outline" size={18} color={colors.error} />
                           </Pressable>
                         </View>
                       </View>
@@ -404,7 +393,7 @@ export default function JournalScreen() {
                                 key={i}
                                 style={[
                                   styles.performanceDot,
-                                  { backgroundColor: i <= entry.performance.longevity ? '#00B4D8' : colors.backgroundTertiary }
+                                  { backgroundColor: i <= entry.performance.longevity ? colors.tint : colors.backgroundTertiary }
                                 ]}
                               />
                             ))}
@@ -420,7 +409,7 @@ export default function JournalScreen() {
                                 key={i}
                                 style={[
                                   styles.performanceDot,
-                                  { backgroundColor: i <= entry.performance.sillage ? '#9D4EDD' : colors.backgroundTertiary }
+                                  { backgroundColor: i <= entry.performance.sillage ? colors.primary : colors.backgroundTertiary }
                                 ]}
                               />
                             ))}
@@ -436,7 +425,7 @@ export default function JournalScreen() {
                                 key={i}
                                 style={[
                                   styles.performanceDot,
-                                  { backgroundColor: i <= entry.performance.projection ? '#FFD93D' : colors.backgroundTertiary }
+                                  { backgroundColor: i <= entry.performance.projection ? colors.warning : colors.backgroundTertiary }
                                 ]}
                               />
                             ))}
@@ -496,9 +485,9 @@ export default function JournalScreen() {
                 <Card variant="elevated" style={styles.selectedParfumCard}>
                   <View style={styles.selectedRow}>
                     <View style={[styles.selectedIcon, { 
-                      backgroundColor: (TYPE_COLORS[selectedParfum.tip] || colors.tint) + '15' 
+                      backgroundColor: (ScentTypeColors[selectedParfum.tip] || colors.tint) + '15' 
                     }]}>
-                      <Ionicons name="sparkles" size={20} color={TYPE_COLORS[selectedParfum.tip] || colors.tint} />
+                      <Ionicons name="sparkles" size={20} color={ScentTypeColors[selectedParfum.tip] || colors.tint} />
                     </View>
                     <View style={styles.selectedInfo}>
                       <ThemedText type="subtitle">{selectedParfum.isim}</ThemedText>
@@ -590,7 +579,7 @@ export default function JournalScreen() {
                       <Ionicons 
                         name={rating >= star ? 'star' : 'star-outline'} 
                         size={36} 
-                        color={rating >= star ? '#FFD93D' : colors.textMuted} 
+                        color={rating >= star ? colors.warning : colors.textMuted} 
                       />
                     </Pressable>
                   ))}
@@ -659,7 +648,7 @@ export default function JournalScreen() {
                         <View 
                           style={[
                             styles.perfDot,
-                            { backgroundColor: i <= longevity ? '#00B4D8' : colors.backgroundTertiary }
+                            { backgroundColor: i <= longevity ? colors.tint : colors.backgroundTertiary }
                           ]}
                         />
                       </Pressable>
@@ -675,7 +664,7 @@ export default function JournalScreen() {
                         <View 
                           style={[
                             styles.perfDot,
-                            { backgroundColor: i <= sillage ? '#9D4EDD' : colors.backgroundTertiary }
+                            { backgroundColor: i <= sillage ? colors.primary : colors.backgroundTertiary }
                           ]}
                         />
                       </Pressable>
@@ -691,7 +680,7 @@ export default function JournalScreen() {
                         <View 
                           style={[
                             styles.perfDot,
-                            { backgroundColor: i <= projection ? '#FFD93D' : colors.backgroundTertiary }
+                            { backgroundColor: i <= projection ? colors.warning : colors.backgroundTertiary }
                           ]}
                         />
                       </Pressable>
@@ -728,18 +717,18 @@ export default function JournalScreen() {
               {/* Favori Gün */}
               <Pressable 
                 onPress={() => setIsFavoriteDay(!isFavoriteDay)}
-                style={[styles.favoriteRow, { backgroundColor: isFavoriteDay ? '#FF6B9D15' : colors.backgroundTertiary }]}
+                style={[styles.favoriteRow, { backgroundColor: isFavoriteDay ? colors.accent + '15' : colors.backgroundTertiary }]}
               >
                 <Ionicons 
                   name={isFavoriteDay ? 'heart' : 'heart-outline'} 
                   size={24} 
-                  color={isFavoriteDay ? '#FF6B9D' : colors.textMuted} 
+                  color={isFavoriteDay ? colors.accent : colors.textMuted} 
                 />
                 <ThemedText style={{ flex: 1, marginLeft: Spacing.md }}>
                   Favori gün olarak işaretle
                 </ThemedText>
                 {isFavoriteDay && (
-                  <Ionicons name="checkmark" size={20} color="#FF6B9D" />
+                  <Ionicons name="checkmark" size={20} color={colors.accent} />
                 )}
               </Pressable>
 
@@ -863,7 +852,7 @@ const styles = StyleSheet.create({
   },
   entryContent: {
     marginTop: Spacing.sm,
-    color: '#666',
+    color: '#888',
     lineHeight: 20,
   },
   entryMeta: {

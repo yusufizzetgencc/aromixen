@@ -20,21 +20,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Parfum } from '@/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-};
+// ScentTypeColors imported from theme
 
 type SortType = 'name' | 'type' | 'brand';
 
@@ -182,12 +175,12 @@ export default function ParfumsScreen() {
                 onPress={() => setSelectedType(type === selectedType ? null : type)}
                 style={[
                   styles.filterChip, 
-                  selectedType === type && { backgroundColor: (TYPE_COLORS[type] || colors.tint) + '15' }
+                  selectedType === type && { backgroundColor: (ScentTypeColors[type] || colors.tint) + '15' }
                 ]}
               >
-                <View style={[styles.filterDot, { backgroundColor: TYPE_COLORS[type] || colors.tint }]} />
+                <View style={[styles.filterDot, { backgroundColor: ScentTypeColors[type] || colors.tint }]} />
                 <ThemedText 
-                  style={[styles.filterText, selectedType === type ? { color: TYPE_COLORS[type] || colors.tint } : {}]}
+                  style={[styles.filterText, selectedType === type ? { color: ScentTypeColors[type] || colors.tint } : {}]}
                 >
                   {type}
                 </ThemedText>
@@ -256,7 +249,7 @@ function GridCard({ parfum, colors, isFavorite, onPress, onToggleFavorite, delay
   onToggleFavorite: () => void;
   delay?: number;
 }) {
-  const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+  const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(300)} style={styles.gridItem}>
@@ -267,7 +260,7 @@ function GridCard({ parfum, colors, isFavorite, onPress, onToggleFavorite, delay
               <ThemedText style={[styles.typeText, { color: typeColor }]}>{parfum.tip}</ThemedText>
             </View>
             <Pressable onPress={onToggleFavorite} hitSlop={8}>
-              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={18} color={isFavorite ? '#FF6B9D' : colors.textMuted} />
+              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={18} color={isFavorite ? colors.accent : colors.textMuted} />
             </Pressable>
           </View>
           
@@ -299,7 +292,7 @@ function ListCard({ parfum, colors, isFavorite, onPress, onToggleFavorite, delay
   onToggleFavorite: () => void;
   delay?: number;
 }) {
-  const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+  const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(300)}>
@@ -321,7 +314,7 @@ function ListCard({ parfum, colors, isFavorite, onPress, onToggleFavorite, delay
           </View>
           
           <Pressable onPress={onToggleFavorite} hitSlop={10}>
-            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#FF6B9D' : colors.textMuted} />
+            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? colors.accent : colors.textMuted} />
           </Pressable>
         </Card>
       </Pressable>

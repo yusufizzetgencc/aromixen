@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Parfum } from '@/types';
@@ -135,8 +135,8 @@ export default function CompareScreen() {
           <Animated.View entering={FadeInUp.delay(300).duration(500)}>
             <Card variant="elevated" style={styles.comparisonCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#00D4AA20' }]}>
-                  <Ionicons name="water" size={20} color="#00D4AA" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.success + '20' }]}>
+                  <Ionicons name="water" size={20} color={colors.success} />
                 </View>
                 <ThemedText type="heading">pH Uyumu</ThemedText>
               </View>
@@ -155,10 +155,10 @@ export default function CompareScreen() {
                         {parfum.isim}
                       </ThemedText>
                       <View style={[styles.phScoreBadge, { 
-                        backgroundColor: phScore >= 70 ? '#00D4AA20' : phScore >= 50 ? '#FFB02020' : '#FF6B6B20' 
+                        backgroundColor: phScore >= 70 ? colors.success + '20' : phScore >= 50 ? colors.warning + '20' : colors.error + '20' 
                       }]}>
                         <ThemedText style={[styles.phScoreText, { 
-                          color: phScore >= 70 ? '#00D4AA' : phScore >= 50 ? '#FFB020' : '#FF6B6B' 
+                          color: phScore >= 70 ? colors.success : phScore >= 50 ? colors.warning : colors.error 
                         }]}>
                           %{Math.max(0, phScore)}
                         </ThemedText>
@@ -177,8 +177,8 @@ export default function CompareScreen() {
           <Animated.View entering={FadeInUp.delay(400).duration(500)}>
             <Card variant="elevated" style={styles.comparisonCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#9D4EDD20' }]}>
-                  <Ionicons name="layers" size={20} color="#9D4EDD" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.primary + '20' }]}>
+                  <Ionicons name="layers" size={20} color={colors.primary} />
                 </View>
                 <ThemedText type="heading">Nota Piramitleri</ThemedText>
               </View>
@@ -218,16 +218,16 @@ export default function CompareScreen() {
             <Animated.View entering={FadeInUp.delay(500).duration(500)}>
               <Card variant="elevated" style={styles.comparisonCard}>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.cardIcon, { backgroundColor: '#4CAF5020' }]}>
-                    <Ionicons name="link" size={20} color="#4CAF50" />
+                  <View style={[styles.cardIcon, { backgroundColor: colors.success + '20' }]}>
+                    <Ionicons name="link" size={20} color={colors.success} />
                   </View>
                   <ThemedText type="heading">Ortak Notalar</ThemedText>
                 </View>
                 
                 <View style={styles.commonNotesContainer}>
                   {commonNotes.map((nota, index) => (
-                    <View key={index} style={[styles.commonNotaBadge, { backgroundColor: '#4CAF5015' }]}>
-                      <ThemedText style={{ color: '#4CAF50', fontSize: FontSizes.sm }}>
+                    <View key={index} style={[styles.commonNotaBadge, { backgroundColor: colors.success + '15' }]}>
+                      <ThemedText style={{ color: colors.success, fontSize: FontSizes.sm }}>
                         {nota}
                       </ThemedText>
                     </View>
@@ -241,8 +241,8 @@ export default function CompareScreen() {
           <Animated.View entering={FadeInUp.delay(600).duration(500)}>
             <Card variant="elevated" style={styles.comparisonCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#FF6B9D20' }]}>
-                  <Ionicons name="calendar" size={20} color="#FF6B9D" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.accent + '20' }]}>
+                  <Ionicons name="calendar" size={20} color={colors.accent} />
                 </View>
                 <ThemedText type="heading">Mevsim Uyumu</ThemedText>
               </View>
@@ -258,8 +258,8 @@ export default function CompareScreen() {
                       style={[
                         styles.seasonItem,
                         { 
-                          backgroundColor: isOverlap ? '#4CAF5015' : colors.backgroundTertiary,
-                          borderColor: isOverlap ? '#4CAF50' : 'transparent',
+                          backgroundColor: isOverlap ? colors.success + '15' : colors.backgroundTertiary,
+                          borderColor: isOverlap ? colors.success : 'transparent',
                           borderWidth: isOverlap ? 1 : 0,
                         }
                       ]}
@@ -269,7 +269,7 @@ export default function CompareScreen() {
                       </ThemedText>
                       <ThemedText type="caption">{season}</ThemedText>
                       <ThemedText style={[styles.seasonCount, { 
-                        color: isOverlap ? '#4CAF50' : colors.textMuted 
+                        color: isOverlap ? colors.success : colors.textMuted 
                       }]}>
                         {count}/{compareParfums.length}
                       </ThemedText>
@@ -302,14 +302,7 @@ function ParfumCompareCard({
   delay: number;
   userPH: number | null;
 }) {
-  const tipColors: Record<string, string> = {
-    'Odunsu': '#8B4513',
-    'Çiçeksi': '#FF69B4',
-    'Oryantal': '#DAA520',
-    'Ferah': '#87CEEB',
-    'Baharatlı': '#FF4500',
-    'Aquatik': '#00CED1',
-  };
+  const tipColor = ScentTypeColors[parfum.tip] || colors.tint;
 
   return (
     <Animated.View 
@@ -317,8 +310,8 @@ function ParfumCompareCard({
       style={[styles.parfumCard, { width, backgroundColor: colors.card }]}
     >
       {/* Type Badge */}
-      <View style={[styles.typeBadge, { backgroundColor: (tipColors[parfum.tip] || colors.tint) + '20' }]}>
-        <ThemedText style={[styles.typeText, { color: tipColors[parfum.tip] || colors.tint }]}>
+      <View style={[styles.typeBadge, { backgroundColor: tipColor + '20' }]}>
+        <ThemedText style={[styles.typeText, { color: tipColor }]}>
           {parfum.tip}
         </ThemedText>
       </View>

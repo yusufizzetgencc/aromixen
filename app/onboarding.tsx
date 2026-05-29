@@ -1,5 +1,5 @@
 /**
- * AROMIXEN - Premium Onboarding Screen
+ * Auram - Premium Onboarding Screen
  * Kapsamlı Kişiselleştirme + pH Hesaplama
  * Elegant Mor/Fuşya Teması
  */
@@ -481,13 +481,13 @@ export default function OnboardingScreen() {
     if (isValid) {
       if (phValue < 5.0) {
         phCategory = 'Asidik - Narenciye notaları sizde parlak açılır';
-        phColor = '#FF8C42';
+        phColor = colors.warning;
       } else if (phValue > 6.0) {
         phCategory = 'Bazik - Alt notalar sizde baskın olur';
-        phColor = '#9D4EDD';
+        phColor = colors.primary;
       } else {
         phCategory = 'Normal - Dengeli koku performansı';
-        phColor = '#2ECC71';
+        phColor = colors.success;
       }
     }
 
@@ -522,16 +522,16 @@ export default function OnboardingScreen() {
         <View style={styles.phScale}>
           <Text style={[styles.phScaleLabel, { color: colors.textSecondary }]}>3.0</Text>
           <View style={styles.phScaleBar}>
-            <View style={[styles.phScaleSection, { backgroundColor: '#FF8C42', flex: 2 }]} />
-            <View style={[styles.phScaleSection, { backgroundColor: '#2ECC71', flex: 1 }]} />
-            <View style={[styles.phScaleSection, { backgroundColor: '#9D4EDD', flex: 2 }]} />
+            <View style={[styles.phScaleSection, { backgroundColor: colors.warning, flex: 2 }]} />
+            <View style={[styles.phScaleSection, { backgroundColor: colors.success, flex: 1 }]} />
+            <View style={[styles.phScaleSection, { backgroundColor: colors.primary, flex: 2 }]} />
           </View>
           <Text style={[styles.phScaleLabel, { color: colors.textSecondary }]}>8.0</Text>
         </View>
         <View style={styles.phScaleLegend}>
-          <Text style={[styles.phScaleLegendText, { color: '#FF8C42' }]}>Asidik</Text>
-          <Text style={[styles.phScaleLegendText, { color: '#2ECC71' }]}>Normal</Text>
-          <Text style={[styles.phScaleLegendText, { color: '#9D4EDD' }]}>Bazik</Text>
+          <Text style={[styles.phScaleLegendText, { color: colors.warning }]}>Asidik</Text>
+          <Text style={[styles.phScaleLegendText, { color: colors.success }]}>Normal</Text>
+          <Text style={[styles.phScaleLegendText, { color: colors.primary }]}>Bazik</Text>
         </View>
       </View>
     );
@@ -540,10 +540,10 @@ export default function OnboardingScreen() {
   // Kategori badge rengi
   const getCategoryColor = (kategori: string) => {
     const categoryColors: Record<string, string> = {
-      'Biyolojik İmza': '#00D4AA',
-      'Koku Reaksiyonu': '#FF6B9D',
-      'Aura ve Karakter': '#9D4EDD',
-      'Yaşam Dinamikleri': '#FF8C42',
+      'Biyolojik İmza': colors.success,
+      'Koku Reaksiyonu': colors.accent,
+      'Aura ve Karakter': colors.primary,
+      'Yaşam Dinamikleri': colors.warning,
     };
     return categoryColors[kategori] || colors.tint;
   };
@@ -552,9 +552,7 @@ export default function OnboardingScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Gradient Background */}
       <LinearGradient
-        colors={colorScheme === 'dark' 
-          ? ['#0D0A14', '#150F20', '#1E1628'] 
-          : ['#FDFBFF', '#F8F4FC', '#F0EAF5']}
+        colors={colors.gradient}
         style={StyleSheet.absoluteFill}
       />
 
@@ -589,9 +587,9 @@ export default function OnboardingScreen() {
         </View>
 
         {/* Canlı pH Göstergesi */}
-        <View style={[styles.livePHContainer, { backgroundColor: colors.card, borderColor: livePHData.tahminiPH < 5 ? '#E63946' : livePHData.tahminiPH > 6 ? '#9D4EDD' : '#00D4AA' }]}>
+        <View style={[styles.livePHContainer, { backgroundColor: colors.card, borderColor: livePHData.tahminiPH < 5 ? colors.error : livePHData.tahminiPH > 6 ? colors.primary : colors.success }]}>
           <Text style={[styles.livePHLabel, { color: colors.textSecondary }]}>pH</Text>
-          <Text style={[styles.livePHValue, { color: livePHData.tahminiPH < 5 ? '#E63946' : livePHData.tahminiPH > 6 ? '#9D4EDD' : '#00D4AA' }]}>
+          <Text style={[styles.livePHValue, { color: livePHData.tahminiPH < 5 ? colors.error : livePHData.tahminiPH > 6 ? colors.primary : colors.success }]}>
             {livePHData.tahminiPH.toFixed(1)}
           </Text>
         </View>
@@ -662,7 +660,7 @@ export default function OnboardingScreen() {
           disabled={!canProceed()}
         >
           <LinearGradient
-            colors={canProceed() ? ['#9D4EDD', '#7B2CBF'] : [colors.border, colors.border]}
+            colors={canProceed() ? [colors.primary, colors.accent] : [colors.border, colors.border]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.nextButtonGradient}

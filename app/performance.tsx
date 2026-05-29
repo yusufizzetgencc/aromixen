@@ -170,7 +170,7 @@ export default function PerformanceScreen() {
               <View style={styles.logHeader}>
                 <ThemedText style={styles.logDate}>{log.date}</ThemedText>
                 <View style={styles.logScore}>
-                  <Ionicons name="star" size={14} color="#FFD166" />
+                  <Ionicons name="star" size={14} color={colors.warning} />
                   <ThemedText style={styles.logScoreText}>{log.personalRating}/10</ThemedText>
                 </View>
               </View>
@@ -273,8 +273,8 @@ const styles = StyleSheet.create({
   title: { fontSize: FontSizes.xl },
   tabBar: { flexDirection: 'row', backgroundColor: 'rgba(150,150,150,0.1)', borderRadius: BorderRadius.full, padding: 4 },
   tab: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: BorderRadius.full },
-  tabActive: { backgroundColor: '#9D4EDD' },
-  tabText: { fontSize: FontSizes.sm, fontWeight: '600', color: '#888' },
+  tabActive: { backgroundColor: colors.primary },
+  tabText: { fontSize: FontSizes.sm, fontWeight: '600', color: colors.textMuted },
   tabTextActive: { color: '#FFF' },
   scrollView: { flex: 1, paddingHorizontal: Spacing.lg },
   tabContent: { paddingTop: Spacing.lg },
@@ -288,13 +288,13 @@ const styles = StyleSheet.create({
   starRow: { flexDirection: 'row', gap: Spacing.sm },
   buttonRow: { flexDirection: 'row', gap: Spacing.md },
   toggleBtn: { flex: 1, padding: Spacing.md, borderRadius: BorderRadius.md, borderWidth: 1, borderColor: '#DDD', alignItems: 'center' },
-  toggleBtnActive: { backgroundColor: 'rgba(157,78,221,0.1)', borderColor: '#9D4EDD' },
-  toggleBtnText: { fontWeight: 'bold', color: '#888' },
-  toggleBtnTextActive: { color: '#9D4EDD' },
+  toggleBtnActive: { backgroundColor: colors.primary + '15', borderColor: colors.primary },
+  toggleBtnText: { fontWeight: 'bold', color: colors.textMuted },
+  toggleBtnTextActive: { color: colors.primary },
   sliderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 20 },
   ratingDot: { width: 16, height: 16, borderRadius: 8, backgroundColor: '#EEE' },
-  ratingDotActive: { backgroundColor: '#9D4EDD' },
-  saveBtn: { backgroundColor: '#9D4EDD', padding: Spacing.md, borderRadius: BorderRadius.md, alignItems: 'center' },
+  ratingDotActive: { backgroundColor: colors.primary },
+  saveBtn: { backgroundColor: colors.primary, padding: Spacing.md, borderRadius: BorderRadius.md, alignItems: 'center' },
   saveBtnText: { color: '#FFF', fontWeight: 'bold', fontSize: FontSizes.md },
   emptyState: { alignItems: 'center', justifyContent: 'center', paddingTop: 100 },
   emptyStateText: { marginTop: Spacing.md, color: '#888', textAlign: 'center' },
@@ -307,8 +307,8 @@ const styles = StyleSheet.create({
   logDetailText: { fontSize: FontSizes.sm, color: '#666' },
   statsGrid: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.lg },
   statBox: { flex: 1, padding: Spacing.md, alignItems: 'center' },
-  statValue: { fontSize: 28, fontWeight: 'bold', color: '#9D4EDD', marginBottom: 4 },
-  statLabel: { fontSize: FontSizes.sm, color: '#888' },
-  highlightCard: { padding: Spacing.md, borderLeftWidth: 4, borderLeftColor: '#9D4EDD' },
-  highlightTitle: { fontSize: FontSizes.sm, color: '#888', marginBottom: 4 },
+  statValue: { fontSize: 28, fontWeight: 'bold', color: colors.primary, marginBottom: 4 },
+  statLabel: { fontSize: FontSizes.sm, color: colors.textMuted },
+  highlightCard: { padding: Spacing.md, borderLeftWidth: 4, borderLeftColor: colors.primary },
+  highlightTitle: { fontSize: FontSizes.sm, color: colors.textMuted, marginBottom: 4 },
 });

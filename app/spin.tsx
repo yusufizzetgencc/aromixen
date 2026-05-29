@@ -29,7 +29,7 @@ import Svg, { Path, G, Text as SvgText, Circle } from 'react-native-svg';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card, Button } from '@/components/ui';
-import { Colors, Spacing, BorderRadius, FontSizes, FontWeights } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes, FontWeights, ScentTypeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 import { Parfum } from '@/types';
@@ -39,24 +39,9 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const WHEEL_SIZE = SCREEN_WIDTH - 80;
 const WHEEL_RADIUS = WHEEL_SIZE / 2;
 
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-  'Tatlı': '#FF69B4',
-  'Amber': '#D4A574',
-  'Meyvemsi': '#FF6B6B',
-  'Yeşil': '#4CAF50',
-  'Deri': '#6B4423',
-  'Pudralı': '#DDA0DD',
-};
-
 const WHEEL_COLORS = [
-  '#FF6B6B', '#FFD93D', '#00B4D8', '#9D4EDD', 
-  '#FF69B4', '#27AE60', '#E91E8C', '#DAA520',
+  '#5C4066', '#D6A06F', '#9D93A5', '#3A2F40',
+  '#7B5C8A', '#A37B55', '#756C7D', '#2D2833',
 ];
 
 type SourceType = 'all' | 'favorites' | 'recent';
@@ -362,19 +347,19 @@ export default function SpinScreen() {
                   
                   <View style={styles.resultContent}>
                     <View style={[styles.resultIcon, { 
-                      backgroundColor: (TYPE_COLORS[result.tip] || '#9D4EDD') + '30' 
+                      backgroundColor: (ScentTypeColors[result.tip] || colors.primary) + '30' 
                     }]}>
                       <Ionicons 
                         name="sparkles" 
                         size={28} 
-                        color={TYPE_COLORS[result.tip] || '#9D4EDD'} 
+                        color={ScentTypeColors[result.tip] || colors.primary} 
                       />
                     </View>
                     <View style={styles.resultInfo}>
                       <ThemedText style={styles.resultName}>{result.isim}</ThemedText>
                       <ThemedText style={styles.resultBrand}>{result.marka}</ThemedText>
-                      <View style={[styles.resultType, { backgroundColor: (TYPE_COLORS[result.tip] || '#9D4EDD') + '20' }]}>
-                        <ThemedText style={{ color: TYPE_COLORS[result.tip] || '#9D4EDD', fontSize: 11 }}>
+                      <View style={[styles.resultType, { backgroundColor: (ScentTypeColors[result.tip] || colors.primary) + '20' }]}>
+                        <ThemedText style={{ color: ScentTypeColors[result.tip] || colors.primary, fontSize: 11 }}>
                           {result.tip}
                         </ThemedText>
                       </View>

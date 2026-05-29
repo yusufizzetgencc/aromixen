@@ -21,7 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card } from '@/components/ui';
-import { BorderRadius, Colors, FontSizes, FontWeights, Spacing } from '@/constants/theme';
+import { BorderRadius, Colors, FontSizes, FontWeights, Spacing, ScentTypeColors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Confetti, ConfettiRef } from '@/components/confetti';
@@ -31,14 +31,7 @@ import { Parfum } from '@/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-};
+// ScentTypeColors is imported from theme.ts instead
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -99,7 +92,7 @@ export default function HomeScreen() {
   const weatherRec = weather ? getWeatherRecommendation(weather) : null;
 
   // Koku aileleri ve sayıları
-  const scentFamilies = Object.entries(TYPE_COLORS).map(([type, color]) => ({
+  const scentFamilies = Object.entries(ScentTypeColors).slice(0, 8).map(([type, color]) => ({
     type,
     color,
     count: parfumler.filter(p => p.tip === type).length,
@@ -119,10 +112,10 @@ export default function HomeScreen() {
           <Animated.View entering={FadeIn.duration(500)} style={styles.header}>
           <View style={styles.headerTop}>
               <View style={styles.logoContainer}>
-                <LinearGradient colors={['#9D4EDD', '#7B2CBF']} style={styles.logoIcon}>
-                  <Ionicons name="sparkles" size={18} color="#FFF" />
+                <LinearGradient colors={colors.gradient} style={[styles.logoIcon, { borderWidth: 1, borderColor: colors.border }]}>
+                  <Ionicons name="diamond" size={18} color={colors.primary} />
                 </LinearGradient>
-                <ThemedText style={styles.logoText}>AROMIXEN</ThemedText>
+                <ThemedText style={styles.logoText}>AURAM</ThemedText>
             </View>
               <Pressable 
                 onPress={() => router.push('/(tabs)/profile')} 
@@ -152,8 +145,8 @@ export default function HomeScreen() {
           {/* SOTD Hub */}
           <Animated.View entering={FadeInUp.delay(50).duration(400)}>
             {streakData.currentStreak > 0 && (
-              <View style={[styles.streakBanner, { backgroundColor: isDark ? 'rgba(255, 107, 157, 0.15)' : 'rgba(255, 107, 157, 0.1)' }]}>
-                <ThemedText style={[styles.streakText, { color: isDark ? '#FFB3C6' : '#D81159' }]}>
+              <View style={[styles.streakBanner, { backgroundColor: colors.accent + (isDark ? '20' : '15') }]}>
+                <ThemedText style={[styles.streakText, { color: colors.accent }]}>
                   🔥 Serin: {streakData.currentStreak}. Gün | En Uzun: {streakData.longestStreak}
                 </ThemedText>
               </View>
@@ -166,7 +159,7 @@ export default function HomeScreen() {
                   {dailyRecs.map((rec, index) => (
                     <Card key={index} style={styles.sotdCard}>
                       <ThemedText style={styles.sotdCardTitle} numberOfLines={1}>{rec.parfum.isim}</ThemedText>
-                      <ThemedText style={styles.sotdCardBrand}>{rec.parfum.marka || 'Aromixen'}</ThemedText>
+                      <ThemedText style={styles.sotdCardBrand}>{rec.parfum.marka || 'Auram'}</ThemedText>
                       <Pressable 
                         style={styles.sotdButton}
                         onPress={() => {
@@ -202,17 +195,17 @@ export default function HomeScreen() {
           <Animated.View entering={FadeInUp.delay(100).duration(400)} style={styles.quickActions}>
                 <Pressable 
               onPress={() => router.push('/(tabs)/parfums')} 
-              style={[styles.quickAction, { backgroundColor: '#9D4EDD15' }]}
+              style={[styles.quickAction, { backgroundColor: colors.primary + '15' }]}
             >
-              <Ionicons name="flask" size={22} color="#9D4EDD" />
-              <ThemedText style={[styles.quickActionText, { color: '#9D4EDD' }]}>Parfümleri Keşfet</ThemedText>
+              <Ionicons name="flask" size={22} color={colors.primary} />
+              <ThemedText style={[styles.quickActionText, { color: colors.primary }]}>Parfümleri Keşfet</ThemedText>
                 </Pressable>
                 <Pressable 
               onPress={() => router.push('/(tabs)/favorites')} 
-              style={[styles.quickAction, { backgroundColor: '#FF6B9D15' }]}
+              style={[styles.quickAction, { backgroundColor: colors.accent + '15' }]}
             >
-              <Ionicons name="heart" size={22} color="#FF6B9D" />
-              <ThemedText style={[styles.quickActionText, { color: '#FF6B9D' }]}>Favorilerim</ThemedText>
+              <Ionicons name="heart" size={22} color={colors.accent} />
+              <ThemedText style={[styles.quickActionText, { color: colors.accent }]}>Favorilerim</ThemedText>
             </Pressable>
           </Animated.View>
 
@@ -228,7 +221,7 @@ export default function HomeScreen() {
             >
               <Pressable onPress={() => router.push('/mood')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#FF6B6B', '#FF8E53']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -241,7 +234,7 @@ export default function HomeScreen() {
 
               <Pressable onPress={() => router.push('/calendar')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#667eea', '#764ba2']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -254,7 +247,7 @@ export default function HomeScreen() {
 
               <Pressable onPress={() => router.push('/layering')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#00B4D8', '#0077B6']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -267,7 +260,7 @@ export default function HomeScreen() {
 
               <Pressable onPress={() => router.push('/gift')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#E91E8C', '#C44569']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -280,7 +273,7 @@ export default function HomeScreen() {
 
               <Pressable onPress={() => router.push('/journal')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#FFD93D', '#FF9500']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -293,7 +286,7 @@ export default function HomeScreen() {
 
               <Pressable onPress={() => router.push('/spin')} style={styles.premiumCard}>
                 <LinearGradient
-                  colors={['#9D4EDD', '#7B2CBF']}
+                  colors={colors.gradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.premiumGradient}
@@ -341,13 +334,13 @@ export default function HomeScreen() {
           </View>
 
                   <View style={styles.weatherRight}>
-                    <View style={[styles.weatherBadge, { backgroundColor: 'rgba(157,78,221,0.1)' }]}>
-                      <Ionicons name="water-outline" size={12} color="#9D4EDD" />
-                      <ThemedText style={{ color: '#9D4EDD', fontSize: 11, fontWeight: '600' }}>%{weather.humidity}</ThemedText>
+                    <View style={[styles.weatherBadge, { backgroundColor: colors.primary + '1A' }]}>
+                      <Ionicons name="water-outline" size={12} color={colors.primary} />
+                      <ThemedText style={{ color: colors.primary, fontSize: 11, fontWeight: '600' }}>%{weather.humidity}</ThemedText>
             </View>
-                    <View style={[styles.weatherBadge, { backgroundColor: 'rgba(0,180,216,0.1)' }]}>
-                      <Ionicons name="speedometer-outline" size={12} color="#00B4D8" />
-                      <ThemedText style={{ color: '#00B4D8', fontSize: 11, fontWeight: '600' }}>{weather.windSpeed} km/s</ThemedText>
+                    <View style={[styles.weatherBadge, { backgroundColor: colors.accent + '1A' }]}>
+                      <Ionicons name="speedometer-outline" size={12} color={colors.accent} />
+                      <ThemedText style={{ color: colors.accent, fontSize: 11, fontWeight: '600' }}>{weather.windSpeed} km/s</ThemedText>
                   </View>
         </View>
               </View>
@@ -362,9 +355,9 @@ export default function HomeScreen() {
               <Pressable 
                           key={i} 
                           onPress={() => router.push('/(tabs)/parfums')}
-                          style={[styles.weatherTag, { backgroundColor: (TYPE_COLORS[type] || colors.tint) + '15' }]}
+                          style={[styles.weatherTag, { backgroundColor: (ScentTypeColors[type] || colors.tint) + '15' }]}
               >
-                          <ThemedText style={{ color: TYPE_COLORS[type] || colors.tint, fontSize: FontSizes.sm, fontWeight: '600' }}>
+                          <ThemedText style={{ color: ScentTypeColors[type] || colors.tint, fontSize: FontSizes.sm, fontWeight: '600' }}>
                             {type}
                           </ThemedText>
               </Pressable>
@@ -464,19 +457,19 @@ export default function HomeScreen() {
               
               <View style={styles.statsGrid}>
                 <View style={styles.statItem}>
-                  <ThemedText style={[styles.statNumber, { color: '#9D4EDD' }]}>{parfumler.length}</ThemedText>
+                  <ThemedText style={[styles.statNumber, { color: colors.primary }]}>{parfumler.length}</ThemedText>
                   <ThemedText type="caption" style={{ color: colors.textMuted }}>Parfüm</ThemedText>
               </View>
                 <View style={styles.statItem}>
-                  <ThemedText style={[styles.statNumber, { color: '#FF6B9D' }]}>{favorites.length}</ThemedText>
+                  <ThemedText style={[styles.statNumber, { color: colors.accent }]}>{favorites.length}</ThemedText>
                   <ThemedText type="caption" style={{ color: colors.textMuted }}>Favori</ThemedText>
             </View>
                 <View style={styles.statItem}>
-                  <ThemedText style={[styles.statNumber, { color: '#00B4D8' }]}>{Object.keys(TYPE_COLORS).length}</ThemedText>
+                  <ThemedText style={[styles.statNumber, { color: colors.primary }]}>{Object.keys(ScentTypeColors).length}</ThemedText>
                   <ThemedText type="caption" style={{ color: colors.textMuted }}>Koku Ailesi</ThemedText>
                     </View>
                 <View style={styles.statItem}>
-                  <ThemedText style={[styles.statNumber, { color: '#00D4AA' }]}>{recentParfums.length}</ThemedText>
+                  <ThemedText style={[styles.statNumber, { color: colors.accent }]}>{recentParfums.length}</ThemedText>
                   <ThemedText type="caption" style={{ color: colors.textMuted }}>Son Görüntülenen</ThemedText>
                 </View>
               </View>
@@ -498,7 +491,7 @@ function MiniParfumCard({ parfum, colors, onPress, delay = 0 }: {
   onPress: () => void;
   delay?: number;
 }) {
-  const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+  const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
 
   return (
     <Animated.View entering={SlideInRight.delay(delay).duration(300)}>
@@ -609,8 +602,8 @@ const styles = StyleSheet.create({
   premiumCard: { width: 120, borderRadius: BorderRadius.xl, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
   premiumGradient: { padding: Spacing.md, alignItems: 'center', minHeight: 120 },
   premiumEmoji: { fontSize: 28, marginBottom: Spacing.sm },
-  premiumTitle: { color: '#FFF', fontSize: FontSizes.sm, fontWeight: FontWeights.bold, textAlign: 'center' },
-  premiumDesc: { color: 'rgba(255,255,255,0.8)', fontSize: 10, textAlign: 'center', marginTop: 2 },
+  premiumTitle: { fontSize: FontSizes.sm, fontWeight: FontWeights.bold, textAlign: 'center' },
+  premiumDesc: { fontSize: 10, textAlign: 'center', marginTop: 2, opacity: 0.8 },
   weatherCard: { marginBottom: Spacing.lg, padding: Spacing.lg },
   locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md, paddingBottom: Spacing.md, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.05)' },
   weatherContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },

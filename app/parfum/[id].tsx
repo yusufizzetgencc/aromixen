@@ -14,7 +14,7 @@ import Animated, { FadeInDown, FadeInUp, FadeIn, SlideInRight, SlideInUp } from 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card, Button } from '@/components/ui';
-import { Colors, Spacing, BorderRadius, FontSizes, FontWeights } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes, FontWeights, ScentTypeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 import { Parfum } from '@/types';
@@ -30,15 +30,7 @@ const KONSANTRASYON_INFO: Record<string, { label: string; saat: string; yuzde: s
   'eau_de_cologne': { label: 'Eau de Cologne', saat: '2-4 saat', yuzde: '%2-4', aciklama: 'Hafif ve ferah' },
 };
 
-// İzlenim renkleri
-const IZLENIM_COLORS: Record<string, string> = {
-  'cekici': '#E91E8C',
-  'profesyonel': '#3498DB',
-  'sicak': '#FF6B6B',
-  'taze': '#00D4AA',
-  'gizemli': '#9D4EDD',
-  'enerjik': '#FFD93D',
-};
+// Removed hardcoded IZLENIM_COLORS
 
 export default function ParfumDetailScreen() {
   const router = useRouter();
@@ -106,7 +98,7 @@ export default function ParfumDetailScreen() {
   const handleShare = async () => {
     if (!parfum) return;
     try {
-      await Share.share({ title: `${parfum.isim} - AROMIXEN`, message: `${parfum.marka} ${parfum.isim} - ${parfum.tip}. AROMIXEN'de keşfet!` });
+      await Share.share({ title: `${parfum.isim} - AURAM`, message: `${parfum.marka} ${parfum.isim} - ${parfum.tip}. AURAM'da keşfet!` });
     } catch (error) {
       console.error('Share error:', error);
     }
@@ -138,11 +130,7 @@ export default function ParfumDetailScreen() {
     );
   }
 
-  const tipColors: Record<string, string> = {
-    'Odunsu': '#8B4513', 'Çiçeksi': '#E91E8C', 'Oryantal': '#DAA520',
-    'Ferah': '#00B4D8', 'Baharatlı': '#FF4500', 'Aquatik': '#00CED1',
-  };
-  const tipColor = tipColors[parfum.tip] || colors.tint;
+  const tipColor = ScentTypeColors[parfum.tip] || colors.tint;
   const isFav = isFavorite(parfum.id);
 
   return (
@@ -160,7 +148,7 @@ export default function ParfumDetailScreen() {
               <Ionicons name="folder-outline" size={22} color={colors.text} />
             </Pressable>
             <Pressable onPress={() => toggleFavoriteParfum(parfum.id)} style={[styles.headerBtn, { backgroundColor: colors.card }]}>
-              <Ionicons name={isFav ? 'heart' : 'heart-outline'} size={22} color={isFav ? '#FF6B9D' : colors.text} />
+              <Ionicons name={isFav ? 'heart' : 'heart-outline'} size={22} color={isFav ? colors.accent : colors.text} />
             </Pressable>
             <Pressable onPress={handleShare} style={[styles.headerBtn, { backgroundColor: colors.card }]}>
               <Ionicons name="share-outline" size={22} color={colors.text} />
@@ -182,8 +170,8 @@ export default function ParfumDetailScreen() {
           <Animated.View entering={FadeInUp.delay(200).duration(500)}>
             <Card variant="elevated" style={styles.phCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#00D4AA20' }]}>
-                  <Ionicons name="analytics" size={20} color="#00D4AA" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.success + '20' }]}>
+                  <Ionicons name="analytics" size={20} color={colors.success} />
                 </View>
                 <ThemedText type="heading">pH Performansı</ThemedText>
               </View>
@@ -191,8 +179,8 @@ export default function ParfumDetailScreen() {
               {phScore !== null ? (
                 <>
                   <View style={styles.phScoreContainer}>
-                    <View style={[styles.phScoreCircle, { borderColor: phScore >= 70 ? '#00D4AA' : phScore >= 50 ? '#FFB020' : '#FF6B6B' }]}>
-                      <ThemedText style={[styles.phScoreValue, { color: phScore >= 70 ? '#00D4AA' : phScore >= 50 ? '#FFB020' : '#FF6B6B' }]}>{phScore}</ThemedText>
+                    <View style={[styles.phScoreCircle, { borderColor: phScore >= 70 ? colors.success : phScore >= 50 ? colors.warning : colors.error }]}>
+                      <ThemedText style={[styles.phScoreValue, { color: phScore >= 70 ? colors.success : phScore >= 50 ? colors.warning : colors.error }]}>{phScore}</ThemedText>
                       <ThemedText type="caption">Uyum</ThemedText>
                     </View>
                     <View style={styles.phDetails}>
@@ -228,8 +216,8 @@ export default function ParfumDetailScreen() {
           <Animated.View entering={FadeInUp.delay(300).duration(500)}>
             <Card variant="elevated" style={styles.notaCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#9D4EDD20' }]}>
-                  <Ionicons name="layers" size={20} color="#9D4EDD" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.primary + '20' }]}>
+                  <Ionicons name="layers" size={20} color={colors.primary} />
                 </View>
                 <ThemedText type="heading">Nota Piramidi</ThemedText>
               </View>
@@ -258,8 +246,8 @@ export default function ParfumDetailScreen() {
           <Animated.View entering={FadeInUp.delay(400).duration(500)}>
             <Card variant="elevated" style={styles.featuresCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#FF6B9D20' }]}>
-                  <Ionicons name="options" size={20} color="#FF6B9D" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.accent + '20' }]}>
+                  <Ionicons name="options" size={20} color={colors.accent} />
                 </View>
                 <ThemedText type="heading">Özellikler</ThemedText>
               </View>
@@ -278,8 +266,8 @@ export default function ParfumDetailScreen() {
             <Animated.View entering={FadeInUp.delay(450).duration(500)}>
               <Card variant="elevated" style={styles.konsantrasyonCard}>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.cardIcon, { backgroundColor: '#FFD93D20' }]}>
-                    <Ionicons name="flask" size={20} color="#FFD93D" />
+                  <View style={[styles.cardIcon, { backgroundColor: colors.warning + '20' }]}>
+                    <Ionicons name="flask" size={20} color={colors.warning} />
                   </View>
                   <ThemedText type="heading">Konsantrasyon</ThemedText>
                 </View>
@@ -318,8 +306,8 @@ export default function ParfumDetailScreen() {
             <Animated.View entering={FadeInUp.delay(500).duration(500)}>
               <Card variant="elevated" style={styles.izlenimCard}>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.cardIcon, { backgroundColor: '#9D4EDD20' }]}>
-                    <Ionicons name="sparkles" size={20} color="#9D4EDD" />
+                  <View style={[styles.cardIcon, { backgroundColor: colors.primary + '20' }]}>
+                    <Ionicons name="sparkles" size={20} color={colors.primary} />
                   </View>
                   <ThemedText type="heading">İzlenim & Kişilik</ThemedText>
                 </View>
@@ -334,9 +322,9 @@ export default function ParfumDetailScreen() {
                         <Animated.View 
                           key={izlenim} 
                           entering={SlideInRight.delay(index * 80).duration(300)}
-                          style={[styles.izlenimTag, { backgroundColor: (IZLENIM_COLORS[izlenim] || tipColor) + '20' }]}
+                          style={[styles.izlenimTag, { backgroundColor: tipColor + '20' }]}
                         >
-                          <ThemedText style={{ color: IZLENIM_COLORS[izlenim] || tipColor, fontSize: FontSizes.sm, fontWeight: '600', textTransform: 'capitalize' }}>
+                          <ThemedText style={{ color: tipColor, fontSize: FontSizes.sm, fontWeight: '600', textTransform: 'capitalize' }}>
                             {izlenim}
                           </ThemedText>
                         </Animated.View>
@@ -373,8 +361,8 @@ export default function ParfumDetailScreen() {
           <Animated.View entering={FadeInUp.delay(550).duration(500)}>
             <Card variant="elevated" style={styles.kullanimCard}>
               <View style={styles.cardHeader}>
-                <View style={[styles.cardIcon, { backgroundColor: '#00B4D820' }]}>
-                  <Ionicons name="calendar" size={20} color="#00B4D8" />
+                <View style={[styles.cardIcon, { backgroundColor: colors.accent + '20' }]}>
+                  <Ionicons name="calendar" size={20} color={colors.accent} />
                 </View>
                 <ThemedText type="heading">Kullanım Rehberi</ThemedText>
               </View>
@@ -433,7 +421,7 @@ export default function ParfumDetailScreen() {
               {parfum.puan && (
                 <Card variant="elevated" style={styles.statCard}>
                   <View style={styles.statContent}>
-                    <Ionicons name="star" size={24} color="#FFD93D" />
+                    <Ionicons name="star" size={24} color={colors.warning} />
                     <ThemedText style={styles.statValue}>{parfum.puan.toFixed(1)}</ThemedText>
                     <ThemedText type="caption" style={{ color: colors.textMuted }}>Puan</ThemedText>
                   </View>
@@ -446,7 +434,7 @@ export default function ParfumDetailScreen() {
                     <Ionicons 
                       name={parfum.fiyatAraligi === 'luks' ? 'diamond' : parfum.fiyatAraligi === 'premium' ? 'star-half' : 'pricetag'} 
                       size={24} 
-                      color={parfum.fiyatAraligi === 'luks' ? '#FFD93D' : parfum.fiyatAraligi === 'premium' ? '#9D4EDD' : '#00D4AA'} 
+                      color={parfum.fiyatAraligi === 'luks' ? colors.warning : parfum.fiyatAraligi === 'premium' ? colors.primary : colors.success} 
                     />
                     <ThemedText style={[styles.statValue, { textTransform: 'capitalize' }]}>
                       {parfum.fiyatAraligi}
@@ -503,8 +491,8 @@ export default function ParfumDetailScreen() {
                 {similarParfums.map((p, index) => (
                   <Pressable key={p.id} onPress={() => router.push(`/parfum/${p.id}`)}>
                     <Animated.View entering={FadeIn.delay(index * 100).duration(400)} style={[styles.similarCard, { backgroundColor: colors.card }]}>
-                      <View style={[styles.similarType, { backgroundColor: (tipColors[p.tip] || colors.tint) + '20' }]}>
-                        <ThemedText style={{ color: tipColors[p.tip] || colors.tint, fontSize: 10 }}>{p.tip}</ThemedText>
+                      <View style={[styles.similarType, { backgroundColor: (ScentTypeColors[p.tip] || colors.tint) + '20' }]}>
+                        <ThemedText style={{ color: ScentTypeColors[p.tip] || colors.tint, fontSize: 10 }}>{p.tip}</ThemedText>
                       </View>
                       <ThemedText type="subtitle" numberOfLines={1} style={{ fontSize: FontSizes.sm }}>{p.isim}</ThemedText>
                       <ThemedText type="caption" numberOfLines={1} style={{ color: colors.textMuted }}>{p.marka}</ThemedText>
@@ -554,7 +542,7 @@ export default function ParfumDetailScreen() {
                           <ThemedText type="subtitle">{collection.name}</ThemedText>
                           <ThemedText type="caption" style={{ color: colors.textMuted }}>{collection.parfumIds.length} parfüm</ThemedText>
                         </View>
-                        <View style={[styles.collectionCheck, { backgroundColor: isInCollection ? '#00D4AA' : colors.backgroundTertiary }]}>
+                        <View style={[styles.collectionCheck, { backgroundColor: isInCollection ? colors.success : colors.backgroundTertiary }]}>
                           {isInCollection && <Ionicons name="checkmark" size={16} color="#FFF" />}
                         </View>
                       </Pressable>

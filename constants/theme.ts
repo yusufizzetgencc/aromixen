@@ -6,101 +6,61 @@
 
 import { Platform } from 'react-native';
 
-// Lüks parfüm temalı renk paleti - Mor/Fuşya tonları
+// Lüks parfüm temalı renk paleti - Velvet & Amber
 export const Colors = {
-  // Ana renkler - Mor gradient paleti
-  primary: {
-    50: '#F8F0FF',
-    100: '#EED9FF',
-    200: '#DEB8FF',
-    300: '#C98FFF',
-    400: '#B366FF',
-    500: '#9D4EDD', // Ana mor
-    600: '#7B2CBF',
-    700: '#5A189A',
-    800: '#3C096C',
-    900: '#240046',
-  },
-  
-  // Aksan renkleri - Koku tipleri için
-  accent: {
-    floral: '#FF6B9D',      // Çiçeksi - Pembe/Fuşya
-    woody: '#6B4423',       // Odunsu - Koyu Kahve
-    fresh: '#00D4AA',       // Ferah - Turkuaz
-    amber: '#FF8C42',       // Amber - Altın Turuncu
-    spicy: '#E63946',       // Baharatlı - Kırmızı
-    fruity: '#FF69B4',      // Meyvemsi - Pembe
-    sweet: '#FFB4D1',       // Tatlı - Açık Pembe
-    green: '#2ECC71',       // Yeşil - Canlı Yeşil
-    oriental: '#C9A227',    // Oryantal - Altın
-    aquatic: '#00B4D8',     // Aquatik - Okyanus Mavisi
-  },
-
-  // Mevsim renkleri
-  seasons: {
-    spring: '#C8E6C9',      // İlkbahar - Pastel Yeşil
-    summer: '#FFECB3',      // Yaz - Pastel Sarı
-    autumn: '#FFAB91',      // Sonbahar - Pastel Turuncu
-    winter: '#B3E5FC',      // Kış - Pastel Mavi
-  },
-
-  // Gradient renkleri
-  gradients: {
-    primary: ['#9D4EDD', '#7B2CBF', '#5A189A'],
-    secondary: ['#FF6B9D', '#C9184A', '#A4133C'],
-    accent: ['#00D4AA', '#00B4D8', '#0077B6'],
-    warm: ['#FF8C42', '#FF6B35', '#E63946'],
-    dark: ['#240046', '#3C096C', '#5A189A'],
-    light: ['#F8F0FF', '#EED9FF', '#DEB8FF'],
-    gold: ['#FFD700', '#FFA500', '#FF8C00'],
-  },
-
-  // Light tema - Elegant ve clean
   light: {
-    text: '#1A0A2E',
-    textSecondary: '#4A3A5C',
-    textMuted: '#8A7A9C',
-    background: '#FDFBFF',
-    backgroundSecondary: '#F8F4FC',
-    backgroundTertiary: '#F0EAF5',
+    background: '#FDFBF7',
+    backgroundSecondary: '#F7F3EB',
+    backgroundTertiary: '#F0EBE1',
+    surface: '#FFFFFF',
+    textPrimary: '#2D2833',
+    textSecondary: '#756C7D',
+    primary: '#5C4066',
+    accent: '#D6A06F',
+    gradient: ['#FDFBF7', '#F1E9F5'] as [string, string, ...string[]],
+    // Mappings for semantic names
+    text: '#2D2833',
+    textMuted: '#756C7D',
     card: '#FFFFFF',
-    cardBorder: '#E8E0F0',
-    tint: '#9D4EDD',
-    tintSecondary: '#7B2CBF',
-    icon: '#6B5B7B',
-    tabIconDefault: '#9A8AAC',
-    tabIconSelected: '#9D4EDD',
-    border: '#E8E0F0',
+    cardBorder: '#F1E9F5',
+    border: '#F1E9F5',
+    tint: '#5C4066',
+    tintSecondary: '#756C7D',
+    icon: '#756C7D',
+    tabIconDefault: '#756C7D',
+    tabIconSelected: '#5C4066',
     success: '#2ECC71',
     error: '#E63946',
-    warning: '#FF8C42',
-    info: '#00B4D8',
-    overlay: 'rgba(26, 10, 46, 0.5)',
-    gradient: ['#FDFBFF', '#F8F4FC'],
+    warning: '#D6A06F',
+    info: '#5C4066',
+    overlay: 'rgba(45, 40, 51, 0.5)',
   },
-
-  // Dark tema - Lüks ve derin
   dark: {
-    text: '#F8F0FF',
-    textSecondary: '#C8B8D8',
-    textMuted: '#8A7A9C',
-    background: '#0D0A14',
-    backgroundSecondary: '#150F20',
-    backgroundTertiary: '#1E1628',
-    card: '#1A1226',
-    cardBorder: '#2A1E3A',
-    tint: '#B366FF',
-    tintSecondary: '#9D4EDD',
-    icon: '#9A8AAC',
-    tabIconDefault: '#6A5A7C',
-    tabIconSelected: '#B366FF',
-    border: '#2A1E3A',
+    background: '#110C14',
+    backgroundSecondary: '#16111A',
+    backgroundTertiary: '#1A141E',
+    surface: '#1A141E',
+    textPrimary: '#F0EBF5',
+    textSecondary: '#9D93A5',
+    primary: '#9F83A8',
+    accent: '#E5B887',
+    gradient: ['#110C14', '#281E30'] as [string, string, ...string[]],
+    // Mappings for semantic names
+    text: '#F0EBF5',
+    textMuted: '#9D93A5',
+    card: '#1A141E',
+    cardBorder: '#281E30',
+    border: '#281E30',
+    tint: '#9F83A8',
+    tintSecondary: '#9D93A5',
+    icon: '#9D93A5',
+    tabIconDefault: '#9D93A5',
+    tabIconSelected: '#9F83A8',
     success: '#2ECC71',
     error: '#FF6B6B',
-    warning: '#FF8C42',
-    info: '#00D4AA',
-    overlay: 'rgba(0, 0, 0, 0.8)',
-    gradient: ['#0D0A14', '#150F20'],
+    warning: '#E5B887',
+    info: '#9F83A8',
+    overlay: 'rgba(17, 12, 20, 0.8)',
   },
 };
 
@@ -188,10 +148,10 @@ export const BorderRadius = {
 };
 
 // Gölgeler - Platform uyumlu ve lüks görünüm
-const createShadow = (offsetY: number, blur: number, opacity: number, elevation: number, color: string = '#9D4EDD') => {
+const createShadow = (offsetY: number, blur: number, opacity: number, elevation: number, color: string = '#5C4066') => {
   if (Platform.OS === 'web') {
     return {
-      boxShadow: `0px ${offsetY}px ${blur}px rgba(157, 78, 221, ${opacity})`,
+      boxShadow: `0px ${offsetY}px ${blur}px rgba(92, 64, 102, ${opacity})`, // Using #5C4066 rgb equivalent roughly
     };
   }
   return {
@@ -205,13 +165,13 @@ const createShadow = (offsetY: number, blur: number, opacity: number, elevation:
 
 export const Shadows = {
   light: {
-    sm: createShadow(2, 4, 0.08, 2),
-    base: createShadow(4, 8, 0.12, 4),
-    md: createShadow(6, 16, 0.15, 6),
-    lg: createShadow(8, 24, 0.18, 10),
-    xl: createShadow(12, 32, 0.22, 16),
+    sm: createShadow(2, 4, 0.08, 2, '#5C4066'),
+    base: createShadow(4, 8, 0.12, 4, '#5C4066'),
+    md: createShadow(6, 16, 0.15, 6, '#5C4066'),
+    lg: createShadow(8, 24, 0.18, 10, '#5C4066'),
+    xl: createShadow(12, 32, 0.22, 16, '#5C4066'),
     glow: {
-      shadowColor: '#9D4EDD',
+      shadowColor: '#D6A06F',
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0.3,
       shadowRadius: 12,
@@ -219,13 +179,13 @@ export const Shadows = {
     },
   },
   dark: {
-    sm: createShadow(2, 4, 0.4, 2, '#B366FF'),
-    base: createShadow(4, 8, 0.5, 4, '#B366FF'),
-    md: createShadow(6, 16, 0.6, 6, '#B366FF'),
-    lg: createShadow(8, 24, 0.7, 10, '#B366FF'),
-    xl: createShadow(12, 32, 0.8, 16, '#B366FF'),
+    sm: createShadow(2, 4, 0.4, 2, '#9F83A8'),
+    base: createShadow(4, 8, 0.5, 4, '#9F83A8'),
+    md: createShadow(6, 16, 0.6, 6, '#9F83A8'),
+    lg: createShadow(8, 24, 0.7, 10, '#9F83A8'),
+    xl: createShadow(12, 32, 0.8, 16, '#9F83A8'),
     glow: {
-      shadowColor: '#B366FF',
+      shadowColor: '#E5B887',
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0.5,
       shadowRadius: 16,
@@ -242,20 +202,20 @@ export const AnimationDurations = {
   verySlow: 800,
 };
 
-// Koku tipi renkleri - Daha canlı ve lüks
+// Koku tipi renkleri - Velvet & Amber estetiğine uygun
 export const ScentTypeColors: Record<string, string> = {
-  'Çiçeksi': '#FF6B9D',
-  'Odunsu': '#8B5A2B',
-  'Ferah': '#00D4AA',
-  'Amber': '#FF8C42',
-  'Baharatlı': '#E63946',
-  'Meyvemsi': '#FF69B4',
-  'Tatlı': '#FFB4D1',
-  'Yeşil': '#2ECC71',
-  'Oryantal': '#C9A227',
-  'Aquatik': '#00B4D8',
-  'Deri': '#654321',
-  'Pudralı': '#F5E6E8',
+  'Çiçeksi': '#B38B9B',
+  'Odunsu': '#705446',
+  'Ferah': '#7A9B94',
+  'Amber': '#D6A06F',
+  'Baharatlı': '#964B4B',
+  'Meyvemsi': '#C48A96',
+  'Tatlı': '#D4A3B3',
+  'Yeşil': '#6C8C69',
+  'Oryantal': '#A68A56',
+  'Aquatik': '#6B8C96',
+  'Deri': '#54433A',
+  'Pudralı': '#C7B6BA',
 };
 
 // Koku tipi ikonları

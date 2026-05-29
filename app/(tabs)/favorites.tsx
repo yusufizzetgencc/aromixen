@@ -14,7 +14,7 @@ import Animated, { FadeInDown, FadeIn, FadeInUp } from 'react-native-reanimated'
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Card, Button } from '@/components/ui';
-import { Colors, Spacing, BorderRadius, FontSizes, FontWeights } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes, FontWeights, ScentTypeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 import { Parfum } from '@/types';
@@ -22,18 +22,9 @@ import { Parfum } from '@/types';
 type TabType = 'favorites' | 'collections' | 'recent';
 type SortType = 'name' | 'type' | 'brand' | 'recent';
 
-const TYPE_COLORS: Record<string, string> = {
-  'Odunsu': '#8B4513',
-  'Çiçeksi': '#E91E8C',
-  'Oryantal': '#DAA520',
-  'Ferah': '#00B4D8',
-  'Baharatlı': '#FF4500',
-  'Aquatik': '#00CED1',
-};
-
 const COLLECTION_COLORS = [
-  '#FF6B9D', '#9D4EDD', '#00B4D8', '#00D4AA', '#FFB020', '#FF6B6B',
-  '#4ECDC4', '#8B4513', '#E91E8C', '#7B2CBF',
+  '#5C4066', '#D6A06F', '#756C7D', '#2D2833', '#A37B55', 
+  '#9D93A5', '#3A2F40', '#00D4AA', '#FFB020', '#FF6B6B',
 ];
 
 const COLLECTION_ICONS = [
@@ -146,8 +137,8 @@ export default function FavoritesScreen() {
     if (favoriteParfums.length === 0) {
       return (
         <Animated.View entering={FadeIn.duration(400)} style={styles.emptyState}>
-          <View style={[styles.emptyIcon, { backgroundColor: '#FF6B9D15' }]}>
-            <Ionicons name="heart-outline" size={40} color="#FF6B9D" />
+          <View style={[styles.emptyIcon, { backgroundColor: colors.accent + '15' }]}>
+            <Ionicons name="heart-outline" size={40} color={colors.accent} />
           </View>
           <ThemedText type="subtitle" center style={{ marginTop: Spacing.lg }}>Henüz favori yok</ThemedText>
           <ThemedText type="body" center style={[styles.emptyText, { color: colors.textMuted }]}>
@@ -170,10 +161,10 @@ export default function FavoritesScreen() {
               <Pressable
                 key={type}
                 onPress={() => setFilterType(type === filterType ? null : type)}
-                style={[styles.filterChip, filterType === type && { backgroundColor: (TYPE_COLORS[type] || colors.tint) + '15' }]}
+                style={[styles.filterChip, filterType === type && { backgroundColor: (ScentTypeColors[type] || colors.tint) + '15' }]}
               >
-                <View style={[styles.filterDot, { backgroundColor: TYPE_COLORS[type] || colors.tint }]} />
-                <ThemedText style={[styles.filterText, filterType === type ? { color: TYPE_COLORS[type] || colors.tint } : {}]}>
+                <View style={[styles.filterDot, { backgroundColor: ScentTypeColors[type] || colors.tint }]} />
+                <ThemedText style={[styles.filterText, filterType === type ? { color: ScentTypeColors[type] || colors.tint } : {}]}>
                   {type}
                 </ThemedText>
               </Pressable>
@@ -439,7 +430,7 @@ function ParfumCard({ parfum, colors, isSelected, compareMode, isFavorite = true
   onToggleFavorite: () => void;
   delay?: number;
 }) {
-  const typeColor = TYPE_COLORS[parfum.tip] || colors.tint;
+  const typeColor = ScentTypeColors[parfum.tip] || colors.tint;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(300)}>
@@ -470,7 +461,7 @@ function ParfumCard({ parfum, colors, isSelected, compareMode, isFavorite = true
             
             {!compareMode && (
               <Pressable onPress={onToggleFavorite} hitSlop={10}>
-                <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#FF6B9D' : colors.textMuted} />
+                <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? colors.accent : colors.textMuted} />
               </Pressable>
             )}
           </View>
@@ -495,7 +486,7 @@ const styles = StyleSheet.create({
   toolbar: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md },
   filterScroll: { flex: 1, gap: Spacing.xs },
   filterChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.md, paddingVertical: 6, borderRadius: BorderRadius.full, gap: 6 },
-  filterChipActive: { backgroundColor: 'rgba(157,78,221,0.1)' },
+  filterChipActive: { backgroundColor: 'rgba(92,64,102,0.1)' },
   filterDot: { width: 6, height: 6, borderRadius: 3 },
   filterText: { fontSize: FontSizes.sm },
   toolbarActions: { marginLeft: Spacing.sm },

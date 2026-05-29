@@ -1,10 +1,10 @@
 /**
  * AURAM - Luxury Welcome Screen
- * Premium, elegant ve sophisticated tasarım
+ * Premium, elegant ve sophisticated tasarım - Velvet & Amber
  */
 
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
+import { View, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,26 +23,11 @@ import Animated, {
 import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius, FontSizes } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 
 const { width, height } = Dimensions.get('window');
-
-// Lüks renk paleti
-const LUXURY_COLORS = {
-  gold: '#C9A962',
-  goldLight: '#E5D4A1',
-  goldDark: '#8B7355',
-  champagne: '#F7E7CE',
-  roseGold: '#B76E79',
-  ivory: '#FFFFF0',
-  cream: '#FFFDD0',
-  midnight: '#0C1222',
-  charcoal: '#1A1F2E',
-  slate: '#2D3446',
-  pearl: '#F5F5F5',
-};
 
 // Elegant floating element
 function FloatingGlow({ 
@@ -51,14 +36,12 @@ function FloatingGlow({
   color, 
   startX, 
   startY,
-  blur = 60,
 }: { 
   delay: number; 
   size: number; 
   color: string; 
   startX: number; 
   startY: number;
-  blur?: number;
 }) {
   const opacity = useSharedValue(0.3);
   const scale = useSharedValue(1);
@@ -84,7 +67,7 @@ function FloatingGlow({
         -1
       )
     );
-  }, []);
+  }, [delay]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -110,7 +93,7 @@ function FloatingGlow({
 }
 
 // Animated diamond sparkle
-function DiamondSparkle({ x, y, delay, size = 8 }: { x: number; y: number; delay: number; size?: number }) {
+function DiamondSparkle({ x, y, delay, color, size = 8 }: { x: number; y: number; delay: number; color: string; size?: number }) {
   const opacity = useSharedValue(0);
   const rotation = useSharedValue(0);
 
@@ -132,7 +115,7 @@ function DiamondSparkle({ x, y, delay, size = 8 }: { x: number; y: number; delay
         -1
       )
     );
-  }, []);
+  }, [delay]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -144,9 +127,9 @@ function DiamondSparkle({ x, y, delay, size = 8 }: { x: number; y: number; delay
       <View style={{
         width: size,
         height: size,
-        backgroundColor: LUXURY_COLORS.gold,
+        backgroundColor: color,
         transform: [{ rotate: '45deg' }],
-        shadowColor: LUXURY_COLORS.gold,
+        shadowColor: color,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,
         shadowRadius: 4,
@@ -195,33 +178,31 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       {/* Premium Background */}
       <LinearGradient
-        colors={isDark 
-          ? [LUXURY_COLORS.midnight, LUXURY_COLORS.charcoal, LUXURY_COLORS.slate, LUXURY_COLORS.charcoal]
-          : ['#FDFCFA', '#F9F6F0', '#F5F1E8', '#FBF9F5']}
-        locations={[0, 0.35, 0.7, 1]}
+        colors={colors.gradient}
+        locations={[0, 1]}
         style={StyleSheet.absoluteFill}
       />
 
       {/* Subtle ambient glows */}
       <View style={styles.glowContainer} pointerEvents="none">
-        <FloatingGlow delay={0} size={300} color={isDark ? LUXURY_COLORS.gold + '08' : LUXURY_COLORS.gold + '12'} startX={width * 0.8} startY={height * 0.15} />
-        <FloatingGlow delay={1500} size={250} color={isDark ? LUXURY_COLORS.roseGold + '06' : LUXURY_COLORS.roseGold + '10'} startX={width * 0.2} startY={height * 0.7} />
-        <FloatingGlow delay={800} size={200} color={isDark ? LUXURY_COLORS.champagne + '05' : LUXURY_COLORS.champagne + '15'} startX={width * 0.5} startY={height * 0.4} />
+        <FloatingGlow delay={0} size={300} color={colors.accent + '08'} startX={width * 0.8} startY={height * 0.15} />
+        <FloatingGlow delay={1500} size={250} color={colors.primary + '06'} startX={width * 0.2} startY={height * 0.7} />
+        <FloatingGlow delay={800} size={200} color={colors.accent + '05'} startX={width * 0.5} startY={height * 0.4} />
         
         {/* Diamond sparkles */}
-        <DiamondSparkle x={width * 0.15} y={height * 0.12} delay={0} size={6} />
-        <DiamondSparkle x={width * 0.85} y={height * 0.18} delay={800} size={8} />
-        <DiamondSparkle x={width * 0.1} y={height * 0.55} delay={1600} size={5} />
-        <DiamondSparkle x={width * 0.9} y={height * 0.45} delay={400} size={7} />
-        <DiamondSparkle x={width * 0.5} y={height * 0.08} delay={1200} size={6} />
+        <DiamondSparkle color={colors.accent} x={width * 0.15} y={height * 0.12} delay={0} size={6} />
+        <DiamondSparkle color={colors.accent} x={width * 0.85} y={height * 0.18} delay={800} size={8} />
+        <DiamondSparkle color={colors.accent} x={width * 0.1} y={height * 0.55} delay={1600} size={5} />
+        <DiamondSparkle color={colors.accent} x={width * 0.9} y={height * 0.45} delay={400} size={7} />
+        <DiamondSparkle color={colors.accent} x={width * 0.5} y={height * 0.08} delay={1200} size={6} />
       </View>
 
       <SafeAreaView style={styles.safeArea}>
         {/* Top decorative line */}
         <Animated.View entering={FadeIn.delay(200).duration(1000)} style={styles.topDecor}>
-          <View style={[styles.decorLine, { backgroundColor: LUXURY_COLORS.gold + '40' }]} />
-          <View style={[styles.decorDiamond, { backgroundColor: LUXURY_COLORS.gold }]} />
-          <View style={[styles.decorLine, { backgroundColor: LUXURY_COLORS.gold + '40' }]} />
+          <View style={[styles.decorLine, { backgroundColor: colors.accent + '40' }]} />
+          <View style={[styles.decorDiamond, { backgroundColor: colors.accent }]} />
+          <View style={[styles.decorLine, { backgroundColor: colors.accent + '40' }]} />
         </Animated.View>
 
         <View style={styles.content}>
@@ -232,78 +213,84 @@ export default function WelcomeScreen() {
           >
             <Animated.View style={[styles.logoWrapper, logoScaleStyle]}>
               {/* Outer glow ring */}
-              <Animated.View style={[styles.logoOuterGlow, logoGlowStyle]} />
+              <Animated.View style={[styles.logoOuterGlow, { backgroundColor: colors.accent }, logoGlowStyle]} />
               
               {/* Main logo container */}
-              <View style={styles.logoContainer}>
-            <LinearGradient
-                  colors={[LUXURY_COLORS.gold, LUXURY_COLORS.goldDark, LUXURY_COLORS.gold]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-                  style={styles.logoGradient}
-            >
+              <View style={[styles.logoContainer, { shadowColor: colors.accent }]}>
+                <LinearGradient
+                  colors={[colors.primary, colors.background]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.logoGradient, { borderColor: colors.accent + '40' }]}
+                >
                   <View style={styles.logoInner}>
-                    <Ionicons name="diamond-outline" size={38} color={isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.midnight} />
+                    <Ionicons name="diamond-outline" size={38} color={isDark ? colors.surface : colors.background} />
                   </View>
-            </LinearGradient>
+                </LinearGradient>
               </View>
               
               {/* Decorative corner accents */}
-              <View style={[styles.cornerAccent, styles.cornerTopLeft, { borderColor: LUXURY_COLORS.gold }]} />
-              <View style={[styles.cornerAccent, styles.cornerTopRight, { borderColor: LUXURY_COLORS.gold }]} />
-              <View style={[styles.cornerAccent, styles.cornerBottomLeft, { borderColor: LUXURY_COLORS.gold }]} />
-              <View style={[styles.cornerAccent, styles.cornerBottomRight, { borderColor: LUXURY_COLORS.gold }]} />
+              <View style={[styles.cornerAccent, styles.cornerTopLeft, { borderColor: colors.accent }]} />
+              <View style={[styles.cornerAccent, styles.cornerTopRight, { borderColor: colors.accent }]} />
+              <View style={[styles.cornerAccent, styles.cornerBottomLeft, { borderColor: colors.accent }]} />
+              <View style={[styles.cornerAccent, styles.cornerBottomRight, { borderColor: colors.accent }]} />
             </Animated.View>
           </Animated.View>
 
           {/* Brand Name */}
           <Animated.View entering={FadeInDown.delay(500).duration(800)}>
-            <ThemedText style={[styles.brandName, { color: isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.charcoal }]}>
+            <ThemedText style={[styles.brandName, { color: colors.textPrimary }]}>
               AURAM
             </ThemedText>
           </Animated.View>
 
           {/* Elegant tagline */}
           <Animated.View entering={FadeInDown.delay(700).duration(800)} style={styles.taglineWrapper}>
-            <View style={[styles.taglineLineLeft, { backgroundColor: LUXURY_COLORS.gold }]} />
-            <ThemedText style={[styles.tagline, { color: LUXURY_COLORS.gold }]}>
+            <View style={[styles.taglineLineLeft, { backgroundColor: colors.accent }]} />
+            <ThemedText style={[styles.tagline, { color: colors.accent }]}>
               LUXURY FRAGRANCE CURATION
             </ThemedText>
-            <View style={[styles.taglineLineRight, { backgroundColor: LUXURY_COLORS.gold }]} />
+            <View style={[styles.taglineLineRight, { backgroundColor: colors.accent }]} />
           </Animated.View>
 
           {/* Main Description */}
           <Animated.View entering={FadeInDown.delay(900).duration(800)} style={styles.descriptionSection}>
-            <ThemedText style={[styles.description, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
+            <ThemedText style={[styles.description, { color: colors.textSecondary }]}>
               Cildinize, kişiliğinize ve yaşam tarzınıza{'\n'}özel olarak tasarlanmış
             </ThemedText>
-            <ThemedText style={[styles.descriptionHighlight, { color: LUXURY_COLORS.gold }]}>
+            <ThemedText style={[styles.descriptionHighlight, { color: colors.accent }]}>
               koku deneyimi
             </ThemedText>
           </Animated.View>
 
           {/* Premium Features */}
           <Animated.View entering={FadeInDown.delay(1100).duration(800)} style={styles.featuresSection}>
-            <View style={[styles.featureCard, { backgroundColor: isDark ? 'rgba(201, 169, 98, 0.08)' : 'rgba(201, 169, 98, 0.06)' }]}>
+            <View style={[styles.featureCard, { borderColor: colors.accent + '20', backgroundColor: colors.accent + (isDark ? '08' : '06') }]}>
               <FeatureItem 
                 icon="finger-print-outline" 
                 title="pH Analizi" 
                 value="Kişisel"
-                isDark={isDark}
+                color={colors.accent}
+                textColor={colors.textPrimary}
+                subColor={colors.textSecondary}
               />
-              <View style={[styles.featureDivider, { backgroundColor: LUXURY_COLORS.gold + '30' }]} />
+              <View style={[styles.featureDivider, { backgroundColor: colors.accent + '30' }]} />
               <FeatureItem 
                 icon="flask-outline" 
                 title="Parfüm" 
                 value={`${parfumler.length}+`}
-                isDark={isDark}
+                color={colors.accent}
+                textColor={colors.textPrimary}
+                subColor={colors.textSecondary}
               />
-              <View style={[styles.featureDivider, { backgroundColor: LUXURY_COLORS.gold + '30' }]} />
+              <View style={[styles.featureDivider, { backgroundColor: colors.accent + '30' }]} />
               <FeatureItem 
                 icon="ribbon-outline" 
                 title="Uyum" 
                 value="%95"
-                isDark={isDark}
+                color={colors.accent}
+                textColor={colors.textPrimary}
+                subColor={colors.textSecondary}
               />
             </View>
           </Animated.View>
@@ -311,15 +298,15 @@ export default function WelcomeScreen() {
           {/* Trust indicators */}
           <Animated.View entering={FadeInDown.delay(1300).duration(800)} style={styles.trustSection}>
             <View style={styles.trustItem}>
-              <Ionicons name="shield-checkmark" size={14} color={LUXURY_COLORS.gold} />
-              <ThemedText style={[styles.trustText, { color: isDark ? LUXURY_COLORS.champagne + 'AA' : LUXURY_COLORS.slate + 'AA' }]}>
+              <Ionicons name="shield-checkmark" size={14} color={colors.accent} />
+              <ThemedText style={[styles.trustText, { color: colors.textSecondary }]}>
                 Premium Koleksiyon
               </ThemedText>
             </View>
-            <View style={[styles.trustDot, { backgroundColor: LUXURY_COLORS.gold }]} />
+            <View style={[styles.trustDot, { backgroundColor: colors.accent }]} />
             <View style={styles.trustItem}>
-              <Ionicons name="sparkles" size={14} color={LUXURY_COLORS.gold} />
-              <ThemedText style={[styles.trustText, { color: isDark ? LUXURY_COLORS.champagne + 'AA' : LUXURY_COLORS.slate + 'AA' }]}>
+              <Ionicons name="sparkles" size={14} color={colors.accent} />
+              <ThemedText style={[styles.trustText, { color: colors.textSecondary }]}>
                 AI Destekli
               </ThemedText>
             </View>
@@ -331,15 +318,15 @@ export default function WelcomeScreen() {
           {/* Journey info */}
           <View style={styles.journeyInfo}>
             <View style={styles.journeyItem}>
-              <Ionicons name="time-outline" size={16} color={LUXURY_COLORS.gold} />
-              <ThemedText style={[styles.journeyText, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
+              <Ionicons name="time-outline" size={16} color={colors.accent} />
+              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
                 5 dakika
               </ThemedText>
             </View>
-            <ThemedText style={[styles.journeyDivider, { color: LUXURY_COLORS.gold + '60' }]}>•</ThemedText>
+            <ThemedText style={[styles.journeyDivider, { color: colors.accent + '60' }]}>•</ThemedText>
             <View style={styles.journeyItem}>
-              <Ionicons name="gift-outline" size={16} color={LUXURY_COLORS.gold} />
-              <ThemedText style={[styles.journeyText, { color: isDark ? LUXURY_COLORS.champagne : LUXURY_COLORS.slate }]}>
+              <Ionicons name="gift-outline" size={16} color={colors.accent} />
+              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
                 Ücretsiz
               </ThemedText>
             </View>
@@ -349,25 +336,26 @@ export default function WelcomeScreen() {
           <Pressable 
             style={({ pressed }) => [
               styles.ctaButton,
+              { shadowColor: colors.accent },
               pressed && styles.ctaButtonPressed,
             ]}
             onPress={() => router.push('/onboarding')}
           >
             <LinearGradient
-              colors={[LUXURY_COLORS.gold, LUXURY_COLORS.goldDark]}
+              colors={[colors.primary, colors.accent]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.ctaGradient}
             >
-              <ThemedText style={styles.ctaText}>Deneyimi Başlat</ThemedText>
-              <View style={styles.ctaArrow}>
-                <Ionicons name="arrow-forward" size={18} color={LUXURY_COLORS.midnight} />
+              <ThemedText style={[styles.ctaText, { color: colors.background }]}>Deneyimi Başlat</ThemedText>
+              <View style={[styles.ctaArrow, { backgroundColor: 'rgba(255, 255, 255, 0.15)' }]}>
+                <Ionicons name="arrow-forward" size={18} color={colors.background} />
               </View>
             </LinearGradient>
           </Pressable>
 
           {/* Subtle bottom note */}
-          <ThemedText style={[styles.bottomNote, { color: isDark ? LUXURY_COLORS.champagne + '80' : LUXURY_COLORS.slate + '80' }]}>
+          <ThemedText style={[styles.bottomNote, { color: colors.textSecondary }]}>
             10 kategori • 27 soru • Kişiselleştirilmiş sonuçlar
           </ThemedText>
         </Animated.View>
@@ -377,16 +365,16 @@ export default function WelcomeScreen() {
 }
 
 // Feature Item Component
-function FeatureItem({ icon, title, value, isDark }: { icon: string; title: string; value: string; isDark: boolean }) {
+function FeatureItem({ icon, title, value, color, textColor, subColor }: { icon: string; title: string; value: string; color: string; textColor: string; subColor: string }) {
   return (
     <View style={styles.featureItem}>
-      <View style={[styles.featureIconBg, { backgroundColor: LUXURY_COLORS.gold + '15' }]}>
-        <Ionicons name={icon as any} size={20} color={LUXURY_COLORS.gold} />
+      <View style={[styles.featureIconBg, { backgroundColor: color + '15' }]}>
+        <Ionicons name={icon as any} size={20} color={color} />
       </View>
-      <ThemedText style={[styles.featureValue, { color: isDark ? LUXURY_COLORS.ivory : LUXURY_COLORS.charcoal }]}>
+      <ThemedText style={[styles.featureValue, { color: textColor }]}>
         {value}
       </ThemedText>
-      <ThemedText style={[styles.featureTitle, { color: isDark ? LUXURY_COLORS.champagne + 'CC' : LUXURY_COLORS.slate + 'CC' }]}>
+      <ThemedText style={[styles.featureTitle, { color: subColor }]}>
         {title}
       </ThemedText>
     </View>
@@ -446,10 +434,8 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 80,
-    backgroundColor: LUXURY_COLORS.gold,
   },
   logoContainer: {
-    shadowColor: LUXURY_COLORS.gold,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.35,
     shadowRadius: 24,
@@ -462,7 +448,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: LUXURY_COLORS.goldLight + '40',
   },
   logoInner: {
     width: 80,
@@ -570,7 +555,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.xl,
     borderWidth: 1,
-    borderColor: LUXURY_COLORS.gold + '20',
   },
   featureItem: {
     alignItems: 'center',
@@ -651,7 +635,6 @@ const styles = StyleSheet.create({
   ctaButton: {
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
-    shadowColor: LUXURY_COLORS.gold,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 16,
@@ -672,14 +655,12 @@ const styles = StyleSheet.create({
   ctaText: {
     fontSize: 15,
     fontWeight: '600',
-    color: LUXURY_COLORS.midnight,
     letterSpacing: 1.5,
   },
   ctaArrow: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(12, 18, 34, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
   },
