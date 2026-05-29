@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { View, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,122 +19,63 @@ import Animated, {
   withSequence,
   withDelay,
   Easing,
+  interpolate,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSizes } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useApp } from '@/context/AppContext';
 
 const { width, height } = Dimensions.get('window');
 
-// Elegant floating element
-function FloatingGlow({ 
-  delay, 
-  size, 
-  color, 
-  startX, 
-  startY,
-}: { 
-  delay: number; 
-  size: number; 
-  color: string; 
-  startX: number; 
-  startY: number;
-}) {
-  const opacity = useSharedValue(0.3);
-  const scale = useSharedValue(1);
-
-  useEffect(() => {
-    opacity.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(0.6, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
-          withTiming(0.3, { duration: 3000, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1
-      )
-    );
-    scale.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(1.2, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
-          withTiming(1, { duration: 4000, easing: Easing.inOut(Easing.ease) })
-        ),
-        -1
-      )
-    );
-  }, [delay]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        {
-          position: 'absolute',
-          left: startX - size / 2,
-          top: startY - size / 2,
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: color,
-        },
-        animatedStyle,
-      ]}
-    />
-  );
-}
-
-// Animated diamond sparkle
-function DiamondSparkle({ x, y, delay, color, size = 8 }: { x: number; y: number; delay: number; color: string; size?: number }) {
+// Elegant floating particle
+function Particle({ delay, x, y, size }: { delay: number; x: number; y: number; size: number }) {
+  const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
-  const rotation = useSharedValue(0);
 
   useEffect(() => {
+    translateY.value = withDelay(
+      delay,
+      withRepeat(
+        withTiming(-50, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
+        -1,
+        true
+      )
+    );
     opacity.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(1, { duration: 1500 }),
-          withTiming(0, { duration: 1500 })
+          withTiming(0.4, { duration: 2000 }),
+          withTiming(0, { duration: 2000 })
         ),
-        -1
-      )
-    );
-    rotation.value = withDelay(
-      delay,
-      withRepeat(
-        withTiming(360, { duration: 6000, easing: Easing.linear }),
-        -1
+        -1,
+        true
       )
     );
   }, [delay]);
 
   const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
     opacity: opacity.value,
-    transform: [{ rotate: `${rotation.value}deg` }],
   }));
 
   return (
-    <Animated.View style={[{ position: 'absolute', left: x, top: y }, animatedStyle]}>
-      <View style={{
-        width: size,
-        height: size,
-        backgroundColor: color,
-        transform: [{ rotate: '45deg' }],
-        shadowColor: color,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
-      }} />
-    </Animated.View>
+    <Animated.View style={[{
+      position: 'absolute',
+      left: x,
+      top: y,
+      width: size,
+      height: size,
+      borderRadius: size / 2,
+      backgroundColor: '#D6A06F',
+      shadowColor: '#D6A06F',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.8,
+      shadowRadius: size,
+    }, animatedStyle]} />
   );
 }
 
@@ -145,238 +86,101 @@ export default function WelcomeScreen() {
   const isDark = colorScheme === 'dark';
   const { parfumler } = useApp();
 
-  // Elegant pulse animation for logo
-  const logoGlow = useSharedValue(0.4);
-  const logoScale = useSharedValue(1);
-  
-  useEffect(() => {
-    logoGlow.value = withRepeat(
-      withSequence(
-        withTiming(0.7, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0.4, { duration: 2500, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1
-    );
-    logoScale.value = withRepeat(
-      withSequence(
-        withTiming(1.02, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
-        withTiming(1, { duration: 3000, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1
-    );
-  }, []);
-
-  const logoGlowStyle = useAnimatedStyle(() => ({
-    opacity: logoGlow.value,
-  }));
-
-  const logoScaleStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: logoScale.value }],
-  }));
-
   return (
     <View style={styles.container}>
-      {/* Premium Background */}
+      {/* Background Gradient */}
       <LinearGradient
-        colors={colors.gradient}
-        locations={[0, 1]}
+        colors={isDark ? ['#1C1420', '#2D2833', '#110D14'] : ['#FDFBF7', '#F5F0E6', '#EBE3D5']}
+        locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Subtle ambient glows */}
-      <View style={styles.glowContainer} pointerEvents="none">
-        <FloatingGlow delay={0} size={300} color={colors.accent + '08'} startX={width * 0.8} startY={height * 0.15} />
-        <FloatingGlow delay={1500} size={250} color={colors.primary + '06'} startX={width * 0.2} startY={height * 0.7} />
-        <FloatingGlow delay={800} size={200} color={colors.accent + '05'} startX={width * 0.5} startY={height * 0.4} />
-        
-        {/* Diamond sparkles */}
-        <DiamondSparkle color={colors.accent} x={width * 0.15} y={height * 0.12} delay={0} size={6} />
-        <DiamondSparkle color={colors.accent} x={width * 0.85} y={height * 0.18} delay={800} size={8} />
-        <DiamondSparkle color={colors.accent} x={width * 0.1} y={height * 0.55} delay={1600} size={5} />
-        <DiamondSparkle color={colors.accent} x={width * 0.9} y={height * 0.45} delay={400} size={7} />
-        <DiamondSparkle color={colors.accent} x={width * 0.5} y={height * 0.08} delay={1200} size={6} />
+      {/* Decorative Particles */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Particle delay={0} x={width * 0.2} y={height * 0.3} size={4} />
+        <Particle delay={1000} x={width * 0.8} y={height * 0.2} size={6} />
+        <Particle delay={500} x={width * 0.5} y={height * 0.6} size={3} />
+        <Particle delay={1500} x={width * 0.1} y={height * 0.7} size={5} />
+        <Particle delay={800} x={width * 0.85} y={height * 0.8} size={7} />
       </View>
 
       <SafeAreaView style={styles.safeArea}>
-        {/* Top decorative line */}
-        <Animated.View entering={FadeIn.delay(200).duration(1000)} style={styles.topDecor}>
-          <View style={[styles.decorLine, { backgroundColor: colors.accent + '40' }]} />
-          <View style={[styles.decorDiamond, { backgroundColor: colors.accent }]} />
-          <View style={[styles.decorLine, { backgroundColor: colors.accent + '40' }]} />
-        </Animated.View>
-
+        
         <View style={styles.content}>
           {/* Logo Section */}
           <Animated.View 
             entering={FadeInDown.delay(300).duration(1000).springify()} 
             style={styles.logoSection}
           >
-            <Animated.View style={[styles.logoWrapper, logoScaleStyle]}>
-              {/* Outer glow ring */}
-              <Animated.View style={[styles.logoOuterGlow, { backgroundColor: colors.accent }, logoGlowStyle]} />
-              
-              {/* Main logo container */}
-              <View style={[styles.logoContainer, { shadowColor: colors.accent }]}>
-                <LinearGradient
-                  colors={[colors.primary, colors.background]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={[styles.logoGradient, { borderColor: colors.accent + '40' }]}
-                >
-                  <View style={styles.logoInner}>
-                    <Ionicons name="diamond-outline" size={38} color={isDark ? colors.surface : colors.background} />
-                  </View>
-                </LinearGradient>
-              </View>
-              
-              {/* Decorative corner accents */}
-              <View style={[styles.cornerAccent, styles.cornerTopLeft, { borderColor: colors.accent }]} />
-              <View style={[styles.cornerAccent, styles.cornerTopRight, { borderColor: colors.accent }]} />
-              <View style={[styles.cornerAccent, styles.cornerBottomLeft, { borderColor: colors.accent }]} />
-              <View style={[styles.cornerAccent, styles.cornerBottomRight, { borderColor: colors.accent }]} />
-            </Animated.View>
+            <Image 
+              source={require('@/assets/images/logo.png')} 
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </Animated.View>
 
-          {/* Brand Name */}
-          <Animated.View entering={FadeInDown.delay(500).duration(800)}>
-            <ThemedText style={[styles.brandName, { color: colors.textPrimary }]}>
-              AURAM
-            </ThemedText>
-          </Animated.View>
-
-          {/* Elegant tagline */}
-          <Animated.View entering={FadeInDown.delay(700).duration(800)} style={styles.taglineWrapper}>
-            <View style={[styles.taglineLineLeft, { backgroundColor: colors.accent }]} />
+          {/* Elegant Tagline */}
+          <Animated.View entering={FadeInDown.delay(500).duration(800)} style={styles.taglineWrapper}>
+            <View style={[styles.taglineLine, { backgroundColor: colors.accent }]} />
             <ThemedText style={[styles.tagline, { color: colors.accent }]}>
-              LUXURY FRAGRANCE CURATION
+              KİŞİYE ÖZEL İMZA KOKUNUZ
             </ThemedText>
-            <View style={[styles.taglineLineRight, { backgroundColor: colors.accent }]} />
+            <View style={[styles.taglineLine, { backgroundColor: colors.accent }]} />
           </Animated.View>
 
-          {/* Main Description */}
-          <Animated.View entering={FadeInDown.delay(900).duration(800)} style={styles.descriptionSection}>
+          {/* Main Title */}
+          <Animated.View entering={FadeInDown.delay(700).duration(800)} style={styles.titleSection}>
+            <ThemedText style={[styles.title, { color: colors.textPrimary }]}>
+              Koku{'\n'}Sanatını{'\n'}Keşfedin
+            </ThemedText>
             <ThemedText style={[styles.description, { color: colors.textSecondary }]}>
-              Cildinize, kişiliğinize ve yaşam tarzınıza{'\n'}özel olarak tasarlanmış
-            </ThemedText>
-            <ThemedText style={[styles.descriptionHighlight, { color: colors.accent }]}>
-              koku deneyimi
+              Ten kimyanız ve yaşam tarzınızla kusursuz uyum sağlayan mükemmel parfümü yapay zeka ile bulun.
             </ThemedText>
           </Animated.View>
 
-          {/* Premium Features */}
-          <Animated.View entering={FadeInDown.delay(1100).duration(800)} style={styles.featuresSection}>
-            <View style={[styles.featureCard, { borderColor: colors.accent + '20', backgroundColor: colors.accent + (isDark ? '08' : '06') }]}>
-              <FeatureItem 
-                icon="finger-print-outline" 
-                title="pH Analizi" 
-                value="Kişisel"
-                color={colors.accent}
-                textColor={colors.textPrimary}
-                subColor={colors.textSecondary}
-              />
-              <View style={[styles.featureDivider, { backgroundColor: colors.accent + '30' }]} />
-              <FeatureItem 
-                icon="flask-outline" 
-                title="Parfüm" 
-                value={`${parfumler.length}+`}
-                color={colors.accent}
-                textColor={colors.textPrimary}
-                subColor={colors.textSecondary}
-              />
-              <View style={[styles.featureDivider, { backgroundColor: colors.accent + '30' }]} />
-              <FeatureItem 
-                icon="ribbon-outline" 
-                title="Uyum" 
-                value="%95"
-                color={colors.accent}
-                textColor={colors.textPrimary}
-                subColor={colors.textSecondary}
-              />
-            </View>
-          </Animated.View>
-
-          {/* Trust indicators */}
-          <Animated.View entering={FadeInDown.delay(1300).duration(800)} style={styles.trustSection}>
-            <View style={styles.trustItem}>
-              <Ionicons name="shield-checkmark" size={14} color={colors.accent} />
-              <ThemedText style={[styles.trustText, { color: colors.textSecondary }]}>
-                Premium Koleksiyon
-              </ThemedText>
-            </View>
-            <View style={[styles.trustDot, { backgroundColor: colors.accent }]} />
-            <View style={styles.trustItem}>
-              <Ionicons name="sparkles" size={14} color={colors.accent} />
-              <ThemedText style={[styles.trustText, { color: colors.textSecondary }]}>
-                AI Destekli
-              </ThemedText>
-            </View>
+          {/* Feature Highlights */}
+          <Animated.View entering={FadeInDown.delay(900).duration(800)} style={styles.featuresRow}>
+            <FeatureBox icon="finger-print-outline" text="pH Analizi" color={colors.accent} textColor={colors.textPrimary} />
+            <View style={[styles.featureDivider, { backgroundColor: colors.border }]} />
+            <FeatureBox icon="star-outline" text="Premium Seçki" color={colors.accent} textColor={colors.textPrimary} />
+            <View style={[styles.featureDivider, { backgroundColor: colors.border }]} />
+            <FeatureBox icon="flask-outline" text="Mükemmel Uyum" color={colors.accent} textColor={colors.textPrimary} />
           </Animated.View>
         </View>
 
         {/* Bottom Section */}
-        <Animated.View entering={FadeInUp.delay(1500).duration(800)} style={styles.bottomSection}>
-          {/* Journey info */}
-          <View style={styles.journeyInfo}>
-            <View style={styles.journeyItem}>
-              <Ionicons name="time-outline" size={16} color={colors.accent} />
-              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
-                5 dakika
-              </ThemedText>
-            </View>
-            <ThemedText style={[styles.journeyDivider, { color: colors.accent + '60' }]}>•</ThemedText>
-            <View style={styles.journeyItem}>
-              <Ionicons name="gift-outline" size={16} color={colors.accent} />
-              <ThemedText style={[styles.journeyText, { color: colors.textSecondary }]}>
-                Ücretsiz
-              </ThemedText>
-            </View>
-          </View>
-
-          {/* Premium CTA Button */}
+        <Animated.View entering={FadeInUp.delay(1100).duration(800)} style={styles.bottomSection}>
+          
+          {/* CTA Button */}
           <Pressable 
             style={({ pressed }) => [
               styles.ctaButton,
-              { shadowColor: colors.accent },
+              { backgroundColor: colors.primary },
               pressed && styles.ctaButtonPressed,
             ]}
             onPress={() => router.push('/onboarding')}
           >
-            <LinearGradient
-              colors={[colors.primary, colors.accent]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.ctaGradient}
-            >
-              <ThemedText style={[styles.ctaText, { color: colors.background }]}>Deneyimi Başlat</ThemedText>
-              <View style={[styles.ctaArrow, { backgroundColor: 'rgba(255, 255, 255, 0.15)' }]}>
-                <Ionicons name="arrow-forward" size={18} color={colors.background} />
-              </View>
-            </LinearGradient>
+            <ThemedText style={styles.ctaText}>Yolculuğa Başla</ThemedText>
+            <Ionicons name="arrow-forward" size={20} color="#FFF" style={styles.ctaIcon} />
           </Pressable>
 
-          {/* Subtle bottom note */}
+          {/* Info Note */}
           <ThemedText style={[styles.bottomNote, { color: colors.textSecondary }]}>
-            10 kategori • 27 soru • Kişiselleştirilmiş sonuçlar
+            15 kısa soru • Sadece size özel parfüm eşleşmeleri
           </ThemedText>
         </Animated.View>
+
       </SafeAreaView>
     </View>
   );
 }
 
-// Feature Item Component
-function FeatureItem({ icon, title, value, color, textColor, subColor }: { icon: string; title: string; value: string; color: string; textColor: string; subColor: string }) {
+// Simple Feature Component
+function FeatureBox({ icon, text, color, textColor }: { icon: string; text: string; color: string; textColor: string }) {
   return (
-    <View style={styles.featureItem}>
-      <View style={[styles.featureIconBg, { backgroundColor: color + '15' }]}>
-        <Ionicons name={icon as any} size={20} color={color} />
-      </View>
-      <ThemedText style={[styles.featureValue, { color: textColor }]}>
-        {value}
-      </ThemedText>
-      <ThemedText style={[styles.featureTitle, { color: subColor }]}>
-        {title}
-      </ThemedText>
+    <View style={styles.featureBox}>
+      <Ionicons name={icon as any} size={22} color={color} style={{ marginBottom: 8 }} />
+      <ThemedText style={[styles.featureBoxText, { color: textColor }]}>{text}</ThemedText>
     </View>
   );
 }
@@ -385,120 +189,27 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1,
   },
-  glowContainer: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
   safeArea: { 
     flex: 1,
+    justifyContent: 'space-between',
   },
-  
-  // Top Decoration
-  topDecor: {
-    flexDirection: 'row',
+  content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacing.lg,
-    gap: Spacing.md,
-  },
-  decorLine: {
-    width: 50,
-    height: 1,
-  },
-  decorDiamond: {
-    width: 8,
-    height: 8,
-    transform: [{ rotate: '45deg' }],
-  },
-  
-  content: { 
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
     paddingHorizontal: Spacing.xl,
+    marginTop: Spacing['2xl'],
   },
   
-  // Logo Styles
+  // Logo
   logoSection: {
     marginBottom: Spacing.xl,
-  },
-  logoWrapper: {
-    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 140,
-    height: 140,
   },
-  logoOuterGlow: {
-    position: 'absolute',
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-  },
-  logoContainer: {
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 24,
-    elevation: 20,
-  },
-  logoGradient: {
-    width: 100,
-    height: 100,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  logoInner: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cornerAccent: {
-    position: 'absolute',
-    width: 16,
-    height: 16,
-    borderWidth: 1.5,
-  },
-  cornerTopLeft: {
-    top: 8,
-    left: 8,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    borderTopLeftRadius: 4,
-  },
-  cornerTopRight: {
-    top: 8,
-    right: 8,
-    borderLeftWidth: 0,
-    borderBottomWidth: 0,
-    borderTopRightRadius: 4,
-  },
-  cornerBottomLeft: {
-    bottom: 8,
-    left: 8,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderBottomLeftRadius: 4,
-  },
-  cornerBottomRight: {
-    bottom: 8,
-    right: 8,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    borderBottomRightRadius: 4,
-  },
-  
-  // Brand Name
-  brandName: {
-    fontSize: 34,
-    fontWeight: '300',
-    letterSpacing: 14,
-    textAlign: 'center',
-    marginBottom: Spacing.md,
+  logo: {
+    width: 200,
+    height: 200,
   },
   
   // Tagline
@@ -506,170 +217,101 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Spacing['2xl'],
+    marginBottom: Spacing.xl,
+    width: '100%',
   },
-  taglineLineLeft: {
-    width: 24,
+  taglineLine: {
     height: 1,
-    marginRight: Spacing.md,
-  },
-  taglineLineRight: {
-    width: 24,
-    height: 1,
-    marginLeft: Spacing.md,
+    flex: 1,
+    opacity: 0.3,
   },
   tagline: {
     fontSize: 10,
-    fontWeight: '600',
+    fontWeight: '700',
     letterSpacing: 4,
+    paddingHorizontal: Spacing.md,
   },
   
-  // Description
-  descriptionSection: {
+  // Title & Description
+  titleSection: {
     alignItems: 'center',
     marginBottom: Spacing['2xl'],
   },
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 26,
+  title: {
+    fontSize: 42,
     fontWeight: '300',
-    marginBottom: Spacing.xs,
+    textAlign: 'center',
+    lineHeight: 52,
+    letterSpacing: 1,
+    marginBottom: Spacing.lg,
   },
-  descriptionHighlight: {
-    fontSize: 20,
-    fontWeight: '600',
-    letterSpacing: 2,
+  description: {
+    fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 24,
+    fontWeight: '400',
+    paddingHorizontal: Spacing.md,
   },
-  
+
   // Features
-  featuresSection: {
-    width: '100%',
-    marginBottom: Spacing.xl,
-  },
-  featureCard: {
+  featuresRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.xl,
-    borderWidth: 1,
-  },
-  featureItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  featureIconBg: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
     justifyContent: 'center',
+    width: '100%',
+    paddingHorizontal: Spacing.md,
+  },
+  featureBox: {
+    flex: 1,
     alignItems: 'center',
-    marginBottom: Spacing.xs,
   },
-  featureValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  featureTitle: {
+  featureBoxText: {
     fontSize: 11,
     fontWeight: '500',
-    letterSpacing: 0.5,
+    textAlign: 'center',
   },
   featureDivider: {
     width: 1,
-    height: 50,
+    height: 30,
+    opacity: 0.5,
   },
-  
-  // Trust Section
-  trustSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.md,
-  },
-  trustItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  trustText: {
-    fontSize: 12,
-    fontWeight: '500',
-    letterSpacing: 0.3,
-  },
-  trustDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-  },
-  
+
   // Bottom Section
   bottomSection: {
     paddingHorizontal: Spacing.xl,
     paddingBottom: Spacing['2xl'],
-    gap: Spacing.lg,
+    alignItems: 'center',
   },
-  journeyInfo: {
+  ctaButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: Spacing.md,
-  },
-  journeyItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  journeyText: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  journeyDivider: {
-    fontSize: 16,
-  },
-  
-  // CTA Button
-  ctaButton: {
-    borderRadius: BorderRadius.lg,
-    overflow: 'hidden',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    elevation: 12,
+    width: '100%',
+    paddingVertical: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    marginBottom: Spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
   ctaButtonPressed: {
     transform: [{ scale: 0.98 }],
-    opacity: 0.95,
-  },
-  ctaGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Spacing.lg + 2,
-    paddingHorizontal: Spacing['2xl'],
-    gap: Spacing.md,
+    opacity: 0.9,
   },
   ctaText: {
-    fontSize: 15,
+    color: '#FFF',
+    fontSize: 16,
     fontWeight: '600',
-    letterSpacing: 1.5,
-  },
-  ctaArrow: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  
-  // Bottom Note
-  bottomNote: {
-    fontSize: 11,
-    textAlign: 'center',
     letterSpacing: 1,
-    fontWeight: '400',
+  },
+  ctaIcon: {
+    marginLeft: Spacing.sm,
+  },
+  bottomNote: {
+    fontSize: 12,
+    textAlign: 'center',
+    opacity: 0.7,
   },
 });
