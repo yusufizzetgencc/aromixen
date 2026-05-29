@@ -14,6 +14,7 @@ import {
     ScrollView,
     StyleSheet,
     View,
+    Image,
 } from 'react-native';
 import Animated, { FadeIn, FadeInUp, SlideInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -59,6 +60,13 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const motivation = getDailyMotivation();
+
+  const currentHour = new Date().getHours();
+  let timeGreeting = 'Merhaba';
+  if (currentHour >= 5 && currentHour < 12) timeGreeting = 'Günaydın';
+  else if (currentHour >= 12 && currentHour < 18) timeGreeting = 'İyi Günler';
+  else if (currentHour >= 18 && currentHour < 22) timeGreeting = 'İyi Akşamlar';
+  else timeGreeting = 'İyi Geceler';
 
   const loadData = useCallback(async () => {
     try {
@@ -112,11 +120,12 @@ export default function HomeScreen() {
           <Animated.View entering={FadeIn.duration(500)} style={styles.header}>
           <View style={styles.headerTop}>
               <View style={styles.logoContainer}>
-                <LinearGradient colors={colors.gradient} style={[styles.logoIcon, { borderWidth: 1, borderColor: colors.border }]}>
-                  <Ionicons name="diamond" size={18} color={colors.primary} />
-                </LinearGradient>
+                <Image 
+                  source={require('@/assets/images/logo.png')} 
+                  style={{ width: 32, height: 32, marginRight: 8, resizeMode: 'contain' }} 
+                />
                 <ThemedText style={styles.logoText}>AURAM</ThemedText>
-            </View>
+              </View>
               <Pressable 
                 onPress={() => router.push('/(tabs)/profile')} 
                 style={[styles.profileBtn, { backgroundColor: colors.backgroundTertiary }]}
@@ -127,17 +136,24 @@ export default function HomeScreen() {
             
             <View style={styles.greetingSection}>
               {weather ? (
-                <>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <ThemedText style={styles.greetingEmoji}>🌤️</ThemedText>
-                  <ThemedText type="title" style={styles.greetingTitle}>
-                    Günaydın! Dışarıda {weather.temperature}°C ve {weather.description.toLowerCase()} bir hava var.
-                  </ThemedText>
-                </>
+                  <View style={{ flex: 1 }}>
+                    <ThemedText type="title" style={styles.greetingTitle}>
+                      {timeGreeting}!
+                    </ThemedText>
+                    <ThemedText style={{ color: colors.textMuted, fontSize: 14, marginTop: 4 }}>
+                      Şu an hava {weather.temperature}°C, {weather.description.toLowerCase()}.
+                    </ThemedText>
+                  </View>
+                </View>
               ) : (
-                <>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <ThemedText style={styles.greetingEmoji}>{motivation.emoji}</ThemedText>
-                  <ThemedText type="title" style={styles.greetingTitle}>Merhaba!</ThemedText>
-                </>
+                  <View style={{ flex: 1 }}>
+                    <ThemedText type="title" style={styles.greetingTitle}>{timeGreeting}!</ThemedText>
+                  </View>
+                </View>
               )}
             </View>
           </Animated.View>

@@ -800,7 +800,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const sortedResults = results
       .sort((a, b) => b.matchPercentage - a.matchPercentage)
-      .slice(0, 15);
+      .slice(0, 5);
     
     setRecommendations(sortedResults);
     return sortedResults;
