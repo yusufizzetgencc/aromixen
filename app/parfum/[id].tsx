@@ -233,7 +233,7 @@ export default function ParfumDetailScreen() {
               </View>
               
               <View style={styles.notaList}>
-                {parfum.notalar[activeNotaTab].map((nota, index) => (
+                {(parfum.notalar?.[activeNotaTab] || []).map((nota, index) => (
                   <Animated.View key={nota} entering={FadeIn.delay(index * 50).duration(300)} style={[styles.notaItem, { backgroundColor: tipColor + '10' }]}>
                     <ThemedText style={{ color: tipColor }}>{nota}</ThemedText>
                   </Animated.View>
