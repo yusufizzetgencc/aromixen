@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.auram.app",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "infoPlist": {
         "NSUserTrackingUsageDescription": "Auram, size kişiselleştirilmiş parfüm önerileri sunabilmek için reklam tercihlerinizi analiz etmek amacıyla cihaz tanımlayıcınızı kullanmak istiyor.",
         "GADApplicationIdentifier": "ca-app-pub-1731461024871182~9770094099",
